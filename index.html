@@ -301,6 +301,48 @@
 
         .shop-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 16px; position: relative; }
         .shop-card.premium { border-color: var(--purple); background: linear-gradient(180deg, #0f172a 0%, #150f2e 100%); }
+
+        .shop-card {
+        background: var(--bg-card);
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 24px;
+        position: relative;
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 350px;
+        margin-bottom: 20px;
+    }
+
+    .shop-card.premium {
+        border-color: var(--purple);
+        box-shadow: 0 0 15px rgba(124, 58, 237, 0.3);
+    }
+
+    .badge-premium-tag {
+        background: var(--purple);
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 0.65rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .btn-submit-main {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        background: #334155;
+        color: #fff;
+        transition: opacity 0.2s;
+    }
+
+    .btn-submit-main:hover {
+        opacity: 0.9;
+    }
     </style>
 </head>
 <body>
@@ -368,36 +410,44 @@
             <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Maximiza la visibilidad de tu bot y multiplica tus conversiones</p>
         </div>
 
-        <div class="shop-card premium">
-            <span class="badge-premium-tag" style="position: absolute; right: 16px; top: 16px;">Suscripción</span>
-            <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem;">
-                <span>🚀</span> PLAN AVANZADO PREMIUM
-            </h4>
-            <p style="font-size: 0.7rem; color: var(--text-muted); margin: 6px 0 12px 0;">Destaca sobre toda la competencia del mercado.</p>
-            <ul style="font-size: 0.75rem; color: #e2e8f0; list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px;">
-                <li>🔥 <strong>Primeras Posiciones:</strong> Ubicación fija en el top del catálogo.</li>
-                <li>🎨 <strong>Diseño Neón:</strong> Tarjeta iluminada con animación arcoíris dinámica.</li>
-                <li>🏷️ <strong>Etiqueta "DESTACADO"</strong> integrada de forma visual.</li>
-                <li>📂 <strong>Categorización Múltiple:</strong> Indexación en hasta 3 categorías.</li>
-                <li>🌐 <strong>Ecosistema Total:</strong> Botón web y botón de soporte directo.</li>
-                <li>🤖 <strong>Capacidad extendida:</strong> Promociona hasta 3 bots simultáneos.</li>
-            </ul>
-            <button class="btn-submit-main" style="background: var(--purple); color: #fff;" onclick="solicitarCompraComercial('Suscripción Premium Avanzada')">Adquirir Plan Premium 👑</button>
-        </div>
+        <!-- Tarjeta 1: Premium -->
+<div class="shop-card premium">
+    <span class="badge-premium-tag" style="position: absolute; right: 16px; top: 16px;">Suscripción</span>
+    <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem; margin: 0;">
+        <span role="img" aria-label="cohete">🚀</span> PLAN AVANZADO PREMIUM
+    </h4>
+    <p style="font-size: 0.7rem; color: var(--text-muted); margin: 6px 0 12px 0;">Destaca sobre toda la competencia del mercado.</p>
+    <ul style="font-size: 0.75rem; color: #e2e8f0; list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; padding: 0;">
+        <li>🔥 <strong>Primeras Posiciones:</strong> Ubicación fija en el top del catálogo.</li>
+        <li>🎨 <strong>Diseño Neón:</strong> Tarjeta iluminada con animación arcoíris dinámica.</li>
+        <li>🏷️ <strong>Etiqueta "DESTACADO"</strong> integrada de forma visual.</li>
+        <li>📂 <strong>Categorización Múltiple:</strong> Indexación en hasta 3 categorías.</li>
+        <li>🌐 <strong>Ecosistema Total:</strong> Botón web y botón de soporte directo.</li>
+        <li>🤖 <strong>Capacidad extendida:</strong> Promociona hasta 3 bots simultáneos.</li>
+    </ul>
+    <button class="btn-submit-main" style="background: var(--purple); color: #fff;" onclick="solicitarCompraComercial('Suscripción Premium Avanzada')">Adquirir Plan Premium 👑</button>
+</div>
 
-        <div class="shop-card">
-            <span class="badge-premium-tag" style="position: absolute; right: 16px; top: 16px; background: var(--cyan); color:#000;">Pago Único</span>
-            <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem;">
-                <span class="badge-verified"><i data-lucide="badge-check"></i></span> INSIGNIA DE VERIFICACIÓN
-            </h4>
-            <p style="font-size: 0.7rem; color: var(--text-muted); margin: 6px 0 12px 0;">Genera confianza instantánea en la comunidad de Telegram.</p>
-            <ul style="font-size: 0.75rem; color: #e2e8f0; list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px;">
-                <li>🔵 <strong>Check Azul Neón:</strong> Icono de validación junto al nombre de tu bot.</li>
-                <li>🛡️ <strong>Sello de Confianza:</strong> Certifica que el bot es seguro y legítimo.</li>
-                <li>📈 <strong>Aumento de CTR:</strong> Incrementa los clics orgánicos de usuarios reales.</li>
-            </ul>
-            <button class="btn-submit-main" onclick="solicitarCompraComercial('Insignia Check de Verificado (Pago Único)')">Comprar Insignia Verificado 🔵</button>
-        </div>
+<!-- Tarjeta 2: Verificación -->
+<div class="shop-card">
+    <span class="badge-premium-tag" style="position: absolute; right: 16px; top: 16px; background: var(--cyan); color:#000;">Pago Único</span>
+    <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem; margin: 0;">
+        <span class="badge-verified" style="display: inline-flex; align-items: center; color: var(--cyan);"><i data-lucide="badge-check" style="width: 18px; height: 18px;"></i></span> INSIGNIA DE VERIFICACIÓN
+    </h4>
+    <p style="font-size: 0.7rem; color: var(--text-muted); margin: 6px 0 12px 0;">Genera confianza instantánea en la comunidad de Telegram.</p>
+    <ul style="font-size: 0.75rem; color: #e2e8f0; list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; padding: 0;">
+        <li>🔵 <strong>Check Azul Neón:</strong> Icono de validación junto al nombre de tu bot.</li>
+        <li>🛡️ <strong>Sello de Confianza:</strong> Certifica que el bot es seguro y legítimo.</li>
+        <li>📈 <strong>Aumento de CTR:</strong> Incrementa los clics orgánicos de usuarios reales.</li>
+    </ul>
+    <button class="btn-submit-main" onclick="solicitarCompraComercial('Insignia Check de Verificado (Pago Único)')">Comprar Insignia Verificado 🔵</button>
+</div>
+
+<!-- Scripts para los iconos -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+</script>
     </main>
 
     <main id="view-profile" class="app-view">
