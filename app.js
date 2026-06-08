@@ -45,7 +45,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         idioma: "Español",
         rating: 4.2,
         isPremium: false,
-        isVerified: false, // Básico ordinario
+        isVerified: false, 
         ownerId: "12345678",
         url_web: "",
         url_soporte: ""
@@ -57,22 +57,28 @@ let currentCategoryFilter = "Todos";
 let activeTabGlobal = "catalog";
 
 // =========================================================================
-// 🚀 CONEXIÓN EN CALIENTE CON TELEGRAM MINI APP SDK
+// 🚀 CONEXIÓN EN CALIENTE CON TELEGRAM MINI APP SDK & BARRA SUPERIOR
 // =========================================================================
 function inicializarDatosTelegram() {
+    inyectarEstilosHeaderDinamico();
+    
     if (window.Telegram && window.Telegram.WebApp) {
         const webapp = window.Telegram.WebApp;
         webapp.ready();
-        webapp.expand(); // Abre la Mini App ocupando toda la pantalla
+        webapp.expand(); 
 
-        // Estilos e integración de colores nativos opcionales
         document.body.style.setProperty('--tg-theme-bg', webapp.backgroundColor);
         
         const user = webapp.initDataUnsafe?.user;
         if (user) {
-            // Render de Perfil Real
+            const esUsuarioPremium = comprobarSiUsuarioEsPremium(user.id.toString());
+            renderizarHeaderSuperiorPegajoso(user.first_name, user.photo_url, esUsuarioPremium);
+            
+            // Render del Perfil Inferior Tab
             const firstLetter = user.first_name ? user.first_name.charAt(0).toUpperCase() : "U";
-            document.getElementById("u-avatar").innerText = firstLetter;
+            const avatarHtml = user.photo_url ? `<img src="${user.photo_url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` : firstLetter;
+            
+            document.getElementById("u-avatar").innerHTML = avatarHtml;
             document.getElementById("u-name").innerText = `${user.first_name} ${user.last_name || ""}`;
             document.getElementById("u-id").innerText = `ID: ${user.id}`;
         } else {
@@ -84,8 +90,11 @@ function inicializarDatosTelegram() {
 }
 
 function cargarPerfilModoDesarrolloPC() {
+    const esAdminPremium = comprobarSiUsuarioEsPremium("12345678");
+    renderizarHeaderSuperiorPegajoso("Airdayz Creador", null, esAdminPremium);
+    
     document.getElementById("u-name").innerText = "Airdayz Creador";
-    document.getElementById("u-id").innerText = "ID: 12345678"; // ID mock para testear tu panel
+    document.getElementById("u-id").innerText = "ID: 12345678"; 
     document.getElementById("u-avatar").innerText = "A";
 }
 
@@ -93,23 +102,94 @@ function obtenerUserIdTelegramActual() {
     if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
         return window.Telegram.WebApp.initDataUnsafe.user.id.toString();
     }
-    return "12345678"; // Retorno local para pruebas
+    return "12345678"; 
+}
+
+function comprobarSiUsuarioEsPremium(userId) {
+    // Si el usuario tiene asignado al menos un bot que sea Premium en la DB, se le concede el rango global en la App
+    return DIRECTORIO_BOTS_MAESTRO.some(bot => bot.ownerId === userId && bot.isPremium);
 }
 
 // =========================================================================
-// 🛠️ CONTROLADOR UNIFICADO PARA ENLACES (Previene bloqueos de Telegram Desktop)
+// 👑 CONSTRUCTOR DE LA BARRA SUPERIOR PEGAJOSA (STICKY HEADER)
+// =========================================================================
+function renderizarHeaderSuperiorPegajoso(nombre, avatarUrl, esPremium) {
+    // Eliminar header previo si existiera por seguridad
+    const previo = document.getElementById("sticky-app-header");
+    if (previo) previo.remove();
+
+    const header = document.createElement("div");
+    header.id = "sticky-app-header";
+    header.className = "sticky-header-container";
+
+    const inicial = nombre ? nombre.charAt(0).toUpperCase() : "U";
+    const badgeRango = esPremium 
+        ? `<span class="user-badge-tag premium-badge">👑 PREMIUM</span>` 
+        : `<span class="user-badge-tag gratis-badge">BÁSICO</span>`;
+
+    const avatarElemento = avatarUrl 
+        ? `<img src="${avatarUrl}" class="header-avatar-img" alt="User">` 
+        : `<div class="header-avatar-fallback">${inicial}</div>`;
+
+    header.innerHTML = `
+        <div class="header-left-side" onclick="switchView('profile')">
+            <div class="header-avatar-wrapper">
+                ${avatarElemento}
+            </div>
+            <div class="header-user-meta">
+                <span class="header-welcome-text">Hola, ${nombre}</span>
+                ${badgeRango}
+            </div>
+        </div>
+        <div class="header-right-side">
+            <span class="header-brand-logo">Mundo Bots</span>
+        </div>
+    `;
+
+    // Inyectar al principio de la aplicación de forma dinámica
+    document.body.insertBefore(header, document.body.firstChild);
+}
+
+function inyectarEstilosHeaderDinamico() {
+    if (document.getElementById("estilos-header-sticky")) return;
+    const style = document.createElement("style");
+    style.id = "estilos-header-sticky";
+    style.innerHTML = `
+        body { padding-top: 60px !important; }
+        .sticky-header-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 56px;
+            background: #0f172a; border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 16px; z-index: 9999; box-sizing: border-box;
+        }
+        .header-left-side { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .header-avatar-wrapper { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, #22d3ee, #06b6d4); display: flex; align-items: center; justify-content: center; border: 1.5px solid rgba(255,255,255,0.2); }
+        .header-avatar-img { width: 100%; height: 100%; object-fit: cover; }
+        .header-avatar-fallback { font-size: 0.85rem; font-weight: 800; color: #fff; }
+        .header-user-meta { display: flex; flex-direction: column; gap: 2px; }
+        .header-welcome-text { font-size: 0.8rem; font-weight: 700; color: #f8fafc; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-badge-tag { font-size: 0.6rem; font-weight: 900; padding: 1px 6px; border-radius: 4px; width: max-content; letter-spacing: 0.3px; }
+        .gratis-badge { background: rgba(255,255,255,0.08); color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); }
+        .premium-badge { background: linear-gradient(90deg, #eab308, #ca8a04); color: #0f172a; box-shadow: 0 0 8px rgba(234,179,8,0.3); }
+        .header-brand-logo { font-size: 0.85rem; font-weight: 900; background: linear-gradient(90deg, #22d3ee, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    `;
+    document.head.appendChild(style);
+}
+
+// =========================================================================
+// 🛠️ CONTROLADOR UNIFICADO PARA ENLACES (Evita bloqueos en Telegram)
 // =========================================================================
 function abrirEnlaceSeguroTelegram(url) {
     if (window.Telegram?.WebApp?.openTelegramLink) {
-        window.Telegram.WebApp.openTelegramLink(url); // Métodos nativos oficiales
+        window.Telegram.WebApp.openTelegramLink(url); 
     } else {
-        window.open(url, '_blank'); // Respaldo para PC / Web local
+        window.open(url, '_blank'); 
     }
 }
 
 function abrirEnlaceExternoWeb(url) {
     if (window.Telegram?.WebApp?.openLink) {
-        window.Telegram.WebApp.openLink(url); // Abre enlaces webs externos sin colgar la app
+        window.Telegram.WebApp.openLink(url); 
     } else {
         window.open(url, '_blank');
     }
@@ -121,7 +201,6 @@ function abrirEnlaceExternoWeb(url) {
 function switchView(viewId) {
     activeTabGlobal = viewId;
 
-    // Cambiar clases de las vistas
     document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active-view'));
     document.querySelectorAll('.nav-item').forEach(tab => tab.classList.remove('active-tab'));
 
@@ -131,17 +210,15 @@ function switchView(viewId) {
     if (activeView) activeView.classList.add('active-view');
     if (activeTab) activeTab.classList.add('active-tab');
 
-    // Control de llamadas de render específicos
     if (viewId === 'catalog') renderizarFiltrosCategorias();
     if (viewId === 'favorites') renderizarVistaFavoritos();
     if (viewId === 'profile') renderizarPanelCreador();
 
-    // Refrescar iconos inyectados en caliente
     if (window.lucide) lucide.createIcons();
 }
 
 // =========================================================================
-// 🏠 COMPONENTE CATÁLOGO: RENDER, QUERYS Y FILTRADO AGRESIVO
+// 🏠 COMPONENTE CATÁLOGO: RENDER Y FILTRADO AGRESIVO
 // =========================================================================
 function extraerCategoriasUnicas() {
     let cats = ["Todos"];
@@ -169,7 +246,6 @@ function setCategoryFilter(catName) {
     filtrarCatalogoEnCaliente();
 }
 
-// Algoritmo de filtrado por prioridad (Premium Primero)
 function obtenerBotsProcesados() {
     return [...DIRECTORIO_BOTS_MAESTRO].sort((a, b) => (b.isPremium ? 1 : 0) - (a.isPremium ? 1 : 0));
 }
@@ -195,7 +271,9 @@ function filtrarCatalogoEnCaliente() {
         return cumpleCategoria && cumpleQuery;
     });
 
-    document.getElementById("counter-results").innerText = `Mostrando ${botsFiltrados.length} bots`;
+    if (document.getElementById("counter-results")) {
+        document.getElementById("counter-results").innerText = `Mostrando ${botsFiltrados.length} bots`;
+    }
     grid.innerHTML = botsFiltrados.map(bot => construirHtmlTarjetaBot(bot, 'cat')).join('');
     if (window.lucide) lucide.createIcons();
 }
@@ -207,12 +285,10 @@ function construirHtmlTarjetaBot(bot, contextoLlamada) {
     const favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || [];
     const esFavorito = favorites.includes(bot.id);
 
-    // Renderizado condicional según Check de Verificado e Insignia Premium
     const badgeVerified = bot.isVerified ? `<span class="badge-verified"><i data-lucide="badge-check"></i></span>` : '';
     const badgePremium = bot.isPremium ? `<span class="badge-premium-tag">DESTACADO</span>` : '';
     const premiumClass = bot.isPremium ? 'premium-card' : '';
 
-    // Bloque extra de botones exclusivo para miembros Avanzados Premium
     let botonesPremiumExtendidos = '';
     if (bot.isPremium) {
         botonesPremiumExtendidos = `
@@ -268,7 +344,6 @@ function construirHtmlTarjetaBot(bot, contextoLlamada) {
     `;
 }
 
-// Control de Acordeón
 function conmutarDespliegueTarjeta(cardIdCompleto) {
     const elemento = document.getElementById(`card-${cardIdCompleto}`);
     if (!elemento) return;
@@ -281,7 +356,7 @@ function lanzarBotTelegram(username) {
 }
 
 // =========================================================================
-// ❤️ GESTIÓN DE FAVORITOS (PERSISTENCIA TOTAL EN LOCAL STORAGE)
+// ❤️ GESTIÓN DE FAVORITOS SINCRONIZADA EN TIEMPO REAL (Solución al Bug)
 // =========================================================================
 function alternarEstadoFavorito(botId) {
     let favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || [];
@@ -292,9 +367,9 @@ function alternarEstadoFavorito(botId) {
     }
     localStorage.setItem("gplus_fav_bots", JSON.stringify(favorites));
     
-    // Repintado simultáneo de vistas para mantener concordancia
-    if (activeTabGlobal === 'catalog') filtrarCatalogoEnCaliente();
-    if (activeTabGlobal === 'favorites') renderizarVistaFavoritos();
+    // SOLUCCIÓN AL BUG: Se fuerzan ambos repintados en paralelo sin importar dónde esté parado el usuario
+    filtrarCatalogoEnCaliente();
+    renderizarVistaFavoritos();
 }
 
 function renderizarVistaFavoritos() {
@@ -306,8 +381,8 @@ function renderizarVistaFavoritos() {
 
     if (botsFavoritos.length === 0) {
         grid.innerHTML = `
-            <div style="text-align:center; padding: 40px var(--text-muted); font-size: 0.8rem; color: var(--text-muted);">
-                <i data-lucide="heart" style="width:40px; height:40px; margin-bottom:10px; opacity:0.3;"></i>
+            <div style="text-align:center; padding: 40px; font-size: 0.8rem; color: #64748b;">
+                <i data-lucide="heart" style="width:40px; height:40px; margin:0 auto 10px auto; opacity:0.3; display:block;"></i>
                 <p>No tienes ningún bot guardado en favoritos todavía.</p>
             </div>
         `;
@@ -333,17 +408,7 @@ function enviarFormularioBotAlAdmin() {
         return;
     }
 
-    const textoMensaje = 
-        `🤖 SOLICITUD DE NUEVO BOT\n` +
-        `=========================\n` +
-        `▪️ Creador ID (Auto): ${userId}\n` +
-        `▪️ Nombre Comercial: ${titulo}\n` +
-        `▪️ Username: ${username}\n` +
-        `▪️ Idioma: ${idioma}\n` +
-        `▪️ Desc. Corta: ${corta}\n` +
-        `▪️ Desc. Larga: ${larga}\n` +
-        `=========================\n` +
-        `Hola Airdayz, envío los datos de mi bot para que verifiques mi propiedad y lo indexes manualmente en el directorio de la app.`;
+    const textoMensaje = `SOLICITUD DE NUEVO BOT - Creador ID: ${userId} - Nombre: ${titulo} - Username: @${username} - Idioma: ${idioma} - Desc. Corta: ${corta} - Desc. Larga: ${larga}. Hola Airdayz, revisa mi bot para indexarlo en el directorio.`;
 
     const url = `https://t.me/Airdayz?text=${encodeURIComponent(textoMensaje)}`;
     abrirEnlaceSeguroTelegram(url);
@@ -354,16 +419,9 @@ function enviarFormularioBotAlAdmin() {
 // =========================================================================
 function solicitarCompraComercial(nombreServicio) {
     const userId = obtenerUserIdTelegramActual();
-    const texto = 
-        `👑 INTENCIÓN DE COMPRA PUBLICITARIA\n` +
-        `=========================\n` +
-        `▪️ Cliente ID (Auto): ${userId}\n` +
-        `▪️ Servicio: ${nombreServicio}\n` +
-        `▪️ Estado: 🟡 ESPERANDO METODO DE PAGO\n` +
-        `=========================\n` +
-        `Hola @Airdayz, estoy interesado en adquirir esta mejora para potenciar el rendimiento de mis bots. Indícame cómo realizar el pago.`;
+    const textoLimpio = `Hola Airdayz, quiero adquirir el servicio PREMIUM para mi bot. Mi ID de usuario es ${userId} y el servicio elegido es ${nombreServicio}. Indícame los pasos para el pago.`;
     
-    const url = `https://t.me/Airdayz?text=${encodeURIComponent(texto)}`;
+    const url = `https://t.me/Airdayz?text=${encodeURIComponent(textoLimpio)}`;
     abrirEnlaceSeguroTelegram(url);
 }
 
@@ -375,24 +433,23 @@ function renderizarPanelCreador() {
     if (!grid) return;
     const userId = obtenerUserIdTelegramActual();
 
-    // Filtra en caliente los bots del array maestro que te pertenezcan
     const misBots = DIRECTORIO_BOTS_MAESTRO.filter(b => b.ownerId === userId);
 
     if (misBots.length === 0) {
         grid.innerHTML = `
-            <div style="background: rgba(255,255,255,0.02); border: 1px dashed var(--border); padding: 20px; border-radius: 12px; text-align: center; font-size: 0.75rem; color: var(--text-muted);">
+            <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; text-align: center; font-size: 0.75rem; color: #94a3b8;">
                 Aún no tienes bots vinculados a tu ID de Telegram en nuestro catálogo de forma manual.<br><br>
-                <span style="color: var(--cyan); font-weight:800; cursor:pointer;" onclick="switchView('submit-bot')">👉 Enviar mi primer bot ahora</span>
+                <span style="color: #22d3ee; font-weight:800; cursor:pointer;" onclick="switchView('submit-bot')">👉 Enviar mi primer bot ahora</span>
             </div>
         `;
     } else {
         grid.innerHTML = misBots.map(bot => {
-            let statusBadge = `<span style="color: var(--text-muted); font-weight:800;">🟢 BÁSICO</span>`;
-            if (bot.isPremium) statusBadge = `<span style="color: var(--purple); font-weight:900;">👑 PREMIUM ACTIVADO</span>`;
-            else if (bot.isVerified) statusBadge = `<span style="color: var(--cyan); font-weight:800;">🔵 VERIFICADO</span>`;
+            let statusBadge = `<span style="color: #94a3b8; font-weight:800;">🟢 BÁSICO</span>`;
+            if (bot.isPremium) statusBadge = `<span style="color: #a855f7; font-weight:900;">👑 PREMIUM ACTIVADO</span>`;
+            else if (bot.isVerified) statusBadge = `<span style="color: #22d3ee; font-weight:800;">🔵 VERIFICADO</span>`;
 
             return `
-                <div style="background: #111827; border: 1px solid var(--border); padding: 12px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="background: #111827; border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px;">
                     <div style="display:flex; justify-content: space-between; align-items: center;">
                         <span style="font-weight: 800; font-size: 0.85rem; color: #fff;">${bot.titulo} (@${bot.username})</span>
                         ${statusBadge}
@@ -408,14 +465,7 @@ function renderizarPanelCreador() {
 
 function solicitarModificacionCambioBot(idInterno, username) {
     const userId = obtenerUserIdTelegramActual();
-    const texto = 
-        `🛠️ SOLICITUD DE CAMBIO / MEJORA DE BOT\n` +
-        `=========================\n` +
-        `▪️ Bot ID Sistema: ${idInterno}\n` +
-        `▪️ Username: @${username}\n` +
-        `▪️ Creador ID: ${userId}\n` +
-        `=========================\n` +
-        `Hola @Airdayz, quiero solicitar una modificación de datos o cambiar el plan contratado para este bot registrado.`;
+    const texto = `SOLICITUD DE MODIFICACION - Bot ID: ${idInterno} - Username: @${username} - Creador ID: ${userId}. Hola Airdayz, quiero modificar los datos o el plan de este bot.`;
     
     const url = `https://t.me/Airdayz?text=${encodeURIComponent(texto)}`;
     abrirEnlaceSeguroTelegram(url);
@@ -426,7 +476,7 @@ function solicitarModificacionCambioBot(idInterno, username) {
 // =========================================================================
 function lanzarReporteBot(username) {
     const userId = obtenerUserIdTelegramActual();
-    const texto = `🚨 REPORTE DE ABUSO O MAL FUNCIONAMIENTO\n=========================\n▪️ Bot Reportado: @${username}\n▪️ Reportado por ID: ${userId}\n=========================\nHola Airdayz, informo que este bot presenta irregularidades en el servicio. Solicito revisión de las políticas de la comunidad.`;
+    const texto = `REPORTE DE ABUSO - Bot Reportado: @${username} - Reportado por ID: ${userId}. Hola Airdayz, este bot presenta fallos o irregularidades.`;
     
     const url = `https://t.me/Airdayz?text=${encodeURIComponent(texto)}`;
     abrirEnlaceSeguroTelegram(url);
