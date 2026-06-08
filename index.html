@@ -410,13 +410,22 @@
             <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Maximiza la visibilidad de tu bot y multiplica tus conversiones</p>
         </div>
 
-        <!-- Tarjeta 1: Premium -->
-<div class="shop-card premium">
+        <div class="shop-card premium">
     <span class="badge-premium-tag" style="position: absolute; right: 16px; top: 16px;">Suscripción</span>
-    <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem; margin: 0;">
-        <span role="img" aria-label="cohete">🚀</span> PLAN AVANZADO PREMIUM
+    <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem;">
+        <span>🚀</span> PLAN AVANZADO PREMIUM
     </h4>
     <p style="font-size: 0.7rem; color: var(--text-muted); margin: 6px 0 12px 0;">Destaca sobre toda la competencia del mercado.</p>
+    
+    <div class="period-selector-wrapper" style="margin-bottom: 12px;">
+        <div class="period-pill active" id="pill-1m" onclick="actualizarCalculoContratacionPremium(1)">1 Mes</div>
+        <div class="period-pill" id="pill-3m" onclick="actualizarCalculoContratacionPremium(3)">3 Meses</div>
+        <div class="period-pill" id="pill-6m" onclick="actualizarCalculoContratacionPremium(6)">6 Meses</div>
+        <div class="period-pill" id="pill-12m" onclick="actualizarCalculoContratacionPremium(12)">1 Año</div>
+    </div>
+    
+    <div id="premium-total-price-display" style="margin-bottom: 14px;"></div>
+
     <ul style="font-size: 0.75rem; color: #e2e8f0; list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; padding: 0;">
         <li>🔥 <strong>Primeras Posiciones:</strong> Ubicación fija en el top del catálogo.</li>
         <li>🎨 <strong>Diseño Neón:</strong> Tarjeta iluminada con animación arcoíris dinámica.</li>
@@ -425,14 +434,14 @@
         <li>🌐 <strong>Ecosistema Total:</strong> Botón web y botón de soporte directo.</li>
         <li>🤖 <strong>Capacidad extendida:</strong> Promociona hasta 3 bots simultáneos.</li>
     </ul>
-    <button class="btn-submit-main" style="background: var(--purple); color: #fff;" onclick="solicitarCompraComercial('Suscripción Premium Avanzada')">Adquirir Plan Premium 👑</button>
+    
+    <button id="btn-comprar-premium-action" class="btn-submit-main" style="background: var(--purple); color: #fff;" onclick="procesarCompraPremiumDesdeUI()">Adquirir Plan Premium 👑</button>
 </div>
 
-<!-- Tarjeta 2: Verificación -->
 <div class="shop-card">
     <span class="badge-premium-tag" style="position: absolute; right: 16px; top: 16px; background: var(--cyan); color:#000;">Pago Único</span>
-    <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem; margin: 0;">
-        <span class="badge-verified" style="display: inline-flex; align-items: center; color: var(--cyan);"><i data-lucide="badge-check" style="width: 18px; height: 18px;"></i></span> INSIGNIA DE VERIFICACIÓN
+    <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem;">
+        <span class="badge-verified"><i data-lucide="badge-check"></i></span> INSIGNIA DE VERIFICACIÓN
     </h4>
     <p style="font-size: 0.7rem; color: var(--text-muted); margin: 6px 0 12px 0;">Genera confianza instantánea en la comunidad de Telegram.</p>
     <ul style="font-size: 0.75rem; color: #e2e8f0; list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; padding: 0;">
@@ -440,7 +449,8 @@
         <li>🛡️ <strong>Sello de Confianza:</strong> Certifica que el bot es seguro y legítimo.</li>
         <li>📈 <strong>Aumento de CTR:</strong> Incrementa los clics orgánicos de usuarios reales.</li>
     </ul>
-    <button class="btn-submit-main" onclick="solicitarCompraComercial('Insignia Check de Verificado (Pago Único)')">Comprar Insignia Verificado 🔵</button>
+    
+    <button class="btn-submit-main" onclick="abrirEnlaceSeguroTelegram('https://t.me/Airdayz?text=' + encodeURIComponent('Hola Airdayz, quiero adquirir la Insignia Check de Verificado (Pago Único) para mi bot. Mi ID es ' + obtenerUserIdTelegramActual()))">Comprar Insignia Verificado 🔵</button>
 </div>
 
 <!-- Scripts para los iconos -->
