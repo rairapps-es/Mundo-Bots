@@ -216,7 +216,6 @@ function inyectarEstilosHeaderDinamico() {
 // 📯 INTERRUPTOR DE ENLACES SEGUROS (MÉTODO DEFINITIVO CORREGIDO)
 // =========================================================================
 function abrirEnlaceSeguroTelegram(url) {
-    // CORRECCIÓN SOLIDEZ: Forzamos la decodificación/limpieza por si acaso, y usamos prioritariamente la API de Telegram
     if (window.Telegram?.WebApp?.openTelegramLink && url.includes("t.me")) {
         window.Telegram.WebApp.openTelegramLink(url);
     } else if (window.Telegram?.WebApp?.openLink) {
@@ -249,6 +248,99 @@ function lanzarToast(mensaje, tipo = "info") {
 }
 
 // =========================================================================
+// 💳 CONSTRUCTOR CRUCIAL DE TARJETAS VISUALES DE BOTS (FALTABA EN TU SCRIPT)
+// =========================================================================
+function construirHtmlTarjetaBot(bot, contextualId) {
+    const favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || [];
+    const esFav = favorites.includes(bot.id) ? "is-favorite" : "";
+    const badgePremium = bot.isPremium ? `<span class="badge-premium-tag">👑 Premium</span>` : "";
+    const badgeVerificado = bot.isVerified ? `<span class="badge-verified"><i data-lucide="badge-check" style="width:14px; height:14px; margin-left:2px;"></i></span>` : "";
+    
+    // Generamos un id único combinando el contexto para evitar duplicados si se renderiza en paralelo
+    const domCardId = `card-${contextualId}-${bot.id}`;
+
+    return `
+        <div class="bot-card ${bot.isPremium ? 'premium-card' : ''}" id="${domCardId}">
+            <div class="bot-card-header" onclick="toggleAcordeonTarjetaUnica('${domCardId}')">
+                <img src="${bot.logo}" class="bot-logo" alt="Logo Bot">
+                <div class="bot-info-main">
+                    <div class="bot-title-row">
+                        <span class="bot-title">${bot.titulo}</span>
+                        ${badgeVerificado}
+                        ${badgePremium}
+                    </div>
+                    <div class="bot-meta-row">
+                        <span class="bot-stars" onclick="event.stopPropagation(); dispararAvisoValoracion();">⭐ ${bot.rating}</span>
+                        <span>•</span>
+                        <span>${bot.idioma}</span>
+                    </div>
+                    <p class="bot-desc-short">${bot.descripcion_corta}</p>
+                </div>
+                <div class="bot-actions-right" onclick="event.stopPropagation();">
+                    <button class="btn-fav-heart ${esFav}" onclick="alternarEstadoFavorito('${bot.id}')">
+                        <i data-lucide="heart" style="width:20px; height:20px; fill:${esFav ? '#ef4444' : 'none'}"></i>
+                    </button>
+                    <button class="btn-launch" onclick="abrirEnlaceSeguroTelegram('https://t.me/${bot.username}')">Abrir</button>
+                </div>
+            </div>
+            <div class="bot-card-body">
+                <div class="bot-body-content">
+                    <p style="color:#cbd5e1; font-size:0.78rem; font-family:inherit;">${bot.descripcion_larga}</p>
+                    <div class="bot-tags-row">
+                        ${bot.categorias.map(c => `<span class="tag-pill">${c}</span>`).join('')}
+                    </div>
+                    <div class="extended-buttons">
+                        ${bot.url_web ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_web}')">🌐 Sitio Web</button>` : ''}
+                        ${bot.url_soporte ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_soporte}')">🛡️ Soporte</button>` : ''}
+                        <button class="btn-ext" style="color:#f43f5e;" onclick="lanzarReporteBot('${bot.username}')">⚠️ Reportar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function toggleAcordeonTarjetaUnica(domId) {
+    const elementoTarjeta = document.getElementById(domId);
+    if (elementoTarjeta) {
+        elementoTarjeta.classList.toggle('is-expanded');
+    }
+}
+
+// =========================================================================
+// ➕ REGISTRO Y ENVÍO DE FORMULARIO DE NUEVOS BOTS
+// =========================================================================
+function enviarFormularioBotAlAdmin() {
+    const title = document.getElementById("f-title")?.value.trim();
+    const username = document.getElementById("f-user")?.value.trim();
+    const lang = document.getElementById("f-lang")?.value.trim() || "No especificado";
+    const shortDesc = document.getElementById("f-short")?.value.trim();
+    const longDesc = document.getElementById("f-long")?.value.trim() || "";
+    const userId = obtenerUserIdTelegramActual();
+
+    if (!title || !username || !shortDesc) {
+        lanzarToast("Por favor, rellena los campos obligatorios (*)", "error");
+        return;
+    }
+
+    lanzarToast("Procesando datos del formulario...", "info");
+    
+    const plantillaTexto = `➕ SOLICITUD DE NUEVO BOT:\n` +
+                           `- Nombre: ${title}\n` +
+                           `- Username: ${username}\n` +
+                           `- Idiomas: ${lang}\n` +
+                           `- Dev ID: ${userId}\n` +
+                           `- Breve: ${shortDesc}\n` +
+                           `- Detalle: ${longDesc}`;
+
+    const url = `https://t.me/Airdayz?text=${encodeURIComponent(plantillaTexto)}`;
+    
+    setTimeout(() => {
+        abrirEnlaceSeguroTelegram(url);
+    }, 400);
+}
+
+// =========================================================================
 // 👤 PANEL DE CONTROL DEL CREADOR (CON EXTENSIONES SOLICITADAS)
 // =========================================================================
 function renderizarPanelCreador() {
@@ -256,7 +348,6 @@ function renderizarPanelCreador() {
     const esPremium = comprobarSiUsuarioEsPremium(userId);
     const countBots = obtenerCantidadBotsUsuario(userId);
     
-    // Inyectar o actualizar el módulo superior de información en caliente
     renderizarModuloSuscripcionPerfil(esPremium, countBots);
 
     const grid = document.getElementById("creator-bots-grid");
@@ -300,7 +391,6 @@ function renderizarModuloSuscripcionPerfil(esPremium, countBots) {
     const slotsTxt = `${countBots} / ${limitMax}`;
     const countFavs = obtenerCantidadFavoritos();
     
-    // Fechas dinámicas de contratación (Año 2026 actual)
     const fechaInicio = esPremium ? "12/01/2026" : "N/A";
     const fechaFin = esPremium ? "12/01/2027" : "N/A";
     
@@ -395,7 +485,6 @@ function procesarCompraPremiumDesdeUI() {
 
     const textoLimpio = `Hola Airdayz, quiero adquirir la Suscripción Premium Avanzada para mi bot. Mi ID es ${userId}, he seleccionado el periodo de ${periodo} por un total de ${total}.`;
     
-    // CAMBIO CRUCIAL: Usamos t.me directo procesado por abrirEnlaceSeguroTelegram que forzará openTelegramLink nativo de la App
     const url = `https://t.me/Airdayz?text=${encodeURIComponent(textoLimpio)}`;
     abrirEnlaceSeguroTelegram(url);
 }
@@ -469,20 +558,41 @@ function switchView(viewId) {
     activeTabGlobal = viewId;
     document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active-view'));
     document.querySelectorAll('.nav-item').forEach(tab => tab.classList.remove('active-tab'));
-    const activeView = document.getElementById(`view-${viewId}`);
-    const activeTab = document.getElementById(`tab-${viewId}`);
+    
+    // CORRECCIÓN: Si pulsa premium o la redirección del perfil busca 'premium-store', se activa el contenedor correcto
+    const viewName = viewId === 'premium-shop' ? 'premium-store' : viewId;
+    const activeView = document.getElementById(`view-${viewName}`);
+    
+    // Mantenemos sincronizado el id de la barra de navegación inferior
+    const activeTab = document.getElementById(`tab-${viewId}`) || document.getElementById(`tab-${viewName}`);
+    
     if (activeView) activeView.classList.add('active-view');
     if (activeTab) activeTab.classList.add('active-tab');
+    
     if (viewId === 'catalog') renderizarFiltrosCategorias();
     if (viewId === 'favorites') renderizarVistaFavoritos();
     if (viewId === 'profile') renderizarPanelCreador();
     if (window.lucide) lucide.createIcons();
 }
+
 function extraerCategoriasUnicas() { let cats = ["Todos"]; DIRECTORIO_BOTS_MAESTRO.forEach(bot => { bot.categorias.forEach(c => { if (!cats.includes(c)) cats.push(c); }); }); return cats; }
 function renderizarFiltrosCategorias() { const container = document.getElementById("categories-container"); if (!container) return; const lista = extraerCategoriasUnicas(); container.innerHTML = lista.map(cat => `<button class="cat-btn ${currentCategoryFilter === cat ? 'active' : ''}" onclick="setCategoryFilter('${cat}')">${cat}</button>`).join(''); }
 function setCategoryFilter(catName) { currentCategoryFilter = catName; renderizarFiltrosCategorias(); filtrarCatalogoEnCaliente(); }
 function obtenerBotsProcesados() { return [...DIRECTORIO_BOTS_MAESTRO].sort((a, b) => (b.isPremium ? 1 : 0) - (a.isPremium ? 1 : 0)); }
-function filtrarCatalogoEnCaliente() { const query = document.getElementById("main-search")?.value.toLowerCase().trim() || ""; const grid = document.getElementById("catalog-grid"); if (!grid) return; const listaOrdenada = obtenerBotsProcesados(); let botsFiltrados = listaOrdenada.filter(bot => { return (currentCategoryFilter === "Todos" || bot.categorias.includes(currentCategoryFilter)) && (bot.titulo.toLowerCase().includes(query) || bot.username.toLowerCase().includes(query) || bot.descripcion_corta.toLowerCase().includes(query)); }); if (document.getElementById("counter-results")) document.getElementById("counter-results").innerText = `Mostrando ${botsFiltrados.length} bots`; grid.innerHTML = botsFiltrados.map(bot => construirHtmlTarjetaBot(bot, 'cat')).join(''); if (window.lucide) lucide.createIcons(); }
+
+function filtrarCatalogoEnCaliente() { 
+    const query = document.getElementById("main-search")?.value.toLowerCase().trim() || ""; 
+    const grid = document.getElementById("catalog-grid"); 
+    if (!grid) return; 
+    const listaOrdenada = obtenerBotsProcesados(); 
+    let botsFiltrados = listaOrdenada.filter(bot => { 
+        return (currentCategoryFilter === "Todos" || bot.categorias.includes(currentCategoryFilter)) && (bot.titulo.toLowerCase().includes(query) || bot.username.toLowerCase().includes(query) || bot.descripcion_corta.toLowerCase().includes(query)); 
+    }); 
+    if (document.getElementById("counter-results")) document.getElementById("counter-results").innerText = `Mostrando ${botsFiltrados.length} bots`; 
+    grid.innerHTML = botsFiltrados.map(bot => construirHtmlTarjetaBot(bot, 'cat')).join(''); 
+    if (window.lucide) lucide.createIcons(); 
+}
+
 function alternarEstadoFavorito(botId) { let favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || []; if (favorites.includes(botId)) { favorites = favorites.filter(id => id !== botId); lanzarToast("Eliminado de favoritos", "warning"); } else { favorites.push(botId); lanzarToast("Añadido a favoritos ❤️", "success"); } localStorage.setItem("gplus_fav_bots", JSON.stringify(favorites)); filtrarCatalogoEnCaliente(); renderizarVistaFavoritos(); if(activeTabGlobal === 'profile') renderizarPanelCreador(); }
 function renderizarVistaFavoritos() { const grid = document.getElementById("favorites-grid"); if (!grid) return; const favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || []; const botsFavoritos = DIRECTORIO_BOTS_MAESTRO.filter(b => favorites.includes(b.id)); if (botsFavoritos.length === 0) { grid.innerHTML = `<div style="text-align:center; padding: 40px; font-size: 0.8rem; color: #64748b;"><i data-lucide="heart" style="width:40px; height:40px; margin:0 auto 10px auto; opacity:0.3; display:block;"></i><p>No tienes ningún bot en favoritos.</p></div>`; } else { grid.innerHTML = botsFavoritos.map(bot => construirHtmlTarjetaBot(bot, 'fav')).join(''); } if (window.lucide) lucide.createIcons(); }
 function solicitarModificacionCambioBot(idInterno, username) { const userId = obtenerUserIdTelegramActual(); const texto = `SOLICITUD DE MODIFICACION - Bot ID: ${idInterno} - Username: @${username} - Creador ID: ${userId}. Hola Airdayz, quiero modificar los datos o el plan de este bot.`; abrirEnlaceSeguroTelegram(`https://t.me/Airdayz?text=${encodeURIComponent(texto)}`); }
