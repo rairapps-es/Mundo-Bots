@@ -276,10 +276,10 @@ function construirHtmlTarjetaBot(bot, contextualId) {
             <!-- Menú Desplegable Compartir Redes -->
             <div id="${shareMenuId}" class="share-social-menu" onclick="event.stopPropagation();">
                 <div class="share-social-grid">
-                    <button onclick="compartirEnRedes('telegram', '${bot.titulo}', '${urlBotTelegram}')" class="share-btn tg"><i data-lucide="send"></i> Telegram</button>
                     <button onclick="compartirEnRedes('twitter', '${bot.titulo}', '${urlBotTelegram}')" class="share-btn tw"><i data-lucide="twitter"></i> X</button>
                     <button onclick="compartirEnRedes('facebook', '${bot.titulo}', '${urlBotTelegram}')" class="share-btn fb"><i data-lucide="facebook"></i> Facebook</button>
                     <button onclick="compartirEnRedes('reddit', '${bot.titulo}', '${urlBotTelegram}')" class="share-btn rd"><i data-lucide="message-square"></i> Reddit</button>
+                    <button onclick="compartirEnRedes('telegram', '${bot.titulo}', '${urlBotTelegram}')" class="share-btn tg"><i data-lucide="send"></i> Telegram</button>
                     <button onclick="copiarAlPortapapeles('${urlBotTelegram}')" class="share-btn cp"><i data-lucide="copy"></i> Copiar</button>
                 </div>
             </div>
