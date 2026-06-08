@@ -251,7 +251,7 @@ function construirHtmlTarjetaBot(bot, contextualId) {
                     </div>
                     <div class="bot-meta-row" style="font-size:0.7rem; color:#64748b; margin-top:2px;">
                         <span class="bot-stars" onclick="event.stopPropagation(); dispararAvisoValoracion();" style="cursor:pointer; color:#eab308;">⭐ ${bot.rating}</span>
-                        <span>•</span>
+   <span>•</span>
                         <span>${bot.idioma}</span>
                     </div>
                     <p class="bot-desc-short" style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">${bot.descripcion_corta}</p>
@@ -623,7 +623,14 @@ function lanzarReporteBot(username) {
 }
 
 function dispararAvisoValoracion() { 
-    abrirEnlaceSeguroTelegram("https://t.me/Mundo_Bot"); 
+    // Cuadro de confirmación nativo que no rompe la interfaz táctil de Telegram
+    const aceptarReseña = confirm("¿Quieres escribir una reseña para este bot?\n\nSerás redirigido a nuestra comunidad para dejar tu valoración y estrellas.");
+    
+    if (aceptarReseña) {
+        lanzarToast("Abriendo canal de opiniones...", "success");
+        // Cambia este enlace por el link directo a tu grupo/canal de reviews si lo deseas
+        abrirEnlaceSeguroTelegram("https://t.me/Mundo_Bot"); 
+    }
 }
 
 // =========================================================================
