@@ -410,7 +410,7 @@
             <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Maximiza la visibilidad de tu bot y multiplica tus conversiones</p>
         </div>
 
-        <div class="shop-card premium">
+        <div class="shop-card premium" style="position: relative;">
     <span class="badge-premium-tag" style="position: absolute; right: 16px; top: 16px;">Suscripción</span>
     <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem;">
         <span>🚀</span> PLAN AVANZADO PREMIUM
@@ -435,10 +435,10 @@
         <li>🤖 <strong>Capacidad extendida:</strong> Promociona hasta 3 bots simultáneos.</li>
     </ul>
     
-    <button id="btn-comprar-premium-action" class="btn-submit-main" style="background: var(--purple); color: #fff;" onclick="procesarCompraPremiumDesdeUI()">Adquirir Plan Premium 👑</button>
+    <button id="btn-comprar-premium-action" class="btn-submit-main" style="background: var(--purple); color: #fff; width: 100%; padding: 10px; border-radius: 6px; font-weight: 800; cursor: pointer;" onclick="procesarCompraPremiumDesdeUI()">Adquirir Plan Premium 👑</button>
 </div>
 
-<div class="shop-card">
+<div class="shop-card" style="position: relative; margin-top: 20px;">
     <span class="badge-premium-tag" style="position: absolute; right: 16px; top: 16px; background: var(--cyan); color:#000;">Pago Único</span>
     <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem;">
         <span class="badge-verified"><i data-lucide="badge-check"></i></span> INSIGNIA DE VERIFICACIÓN
@@ -450,7 +450,7 @@
         <li>📈 <strong>Aumento de CTR:</strong> Incrementa los clics orgánicos de usuarios reales.</li>
     </ul>
     
-    <button class="btn-submit-main" onclick="abrirEnlaceSeguroTelegram('https://t.me/Airdayz?text=' + encodeURIComponent('Hola Airdayz, quiero adquirir la Insignia Check de Verificado (Pago Único) para mi bot. Mi ID es ' + obtenerUserIdTelegramActual()))">Comprar Insignia Verificado 🔵</button>
+    <button class="btn-submit-main" style="width: 100%; padding: 10px; border-radius: 6px; font-weight: 800; cursor: pointer;" onclick="ejecutarCompraVerificadoDirecta()">Comprar Insignia Verificado 🔵</button>
 </div>
 
 <!-- Scripts para los iconos -->
