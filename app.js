@@ -56,11 +56,15 @@ const DIRECTORIO_BOTS_MAESTRO = [
 let currentCategoryFilter = "Todos";
 let activeTabGlobal = "catalog";
 
+// Precios base comerciales de referencia
+const PRECIO_BASE_PREMIUM_MES = 9.99;
+
 // =========================================================================
 // 🚀 CONEXIÓN EN CALIENTE CON TELEGRAM MINI APP SDK & BARRA SUPERIOR
 // =========================================================================
 function inicializarDatosTelegram() {
     inyectarEstilosHeaderDinamico();
+    inyectarContenedorToast();
     
     if (window.Telegram && window.Telegram.WebApp) {
         const webapp = window.Telegram.WebApp;
@@ -78,24 +82,27 @@ function inicializarDatosTelegram() {
             const firstLetter = user.first_name ? user.first_name.charAt(0).toUpperCase() : "U";
             const avatarHtml = user.photo_url ? `<img src="${user.photo_url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` : firstLetter;
             
-            document.getElementById("u-avatar").innerHTML = avatarHtml;
-            document.getElementById("u-name").innerText = `${user.first_name} ${user.last_name || ""}`;
-            document.getElementById("u-id").innerText = `ID: ${user.id}`;
+            if(document.getElementById("u-avatar")) document.getElementById("u-avatar").innerHTML = avatarHtml;
+            if(document.getElementById("u-name")) document.getElementById("u-name").innerText = `${user.first_name} ${user.last_name || ""}`;
+            if(document.getElementById("u-id")) document.getElementById("u-id").innerText = `ID: ${user.id}`;
         } else {
             cargarPerfilModoDesarrolloPC();
         }
     } else {
         cargarPerfilModoDesarrolloPC();
     }
+    
+    // Verificar si corresponde explosión de confeti de bienvenida/logro
+    comprobarYDispararConfetiLogro();
 }
 
 function cargarPerfilModoDesarrolloPC() {
     const esAdminPremium = comprobarSiUsuarioEsPremium("12345678");
     renderizarHeaderSuperiorPegajoso("Airdayz Creador", null, esAdminPremium);
     
-    document.getElementById("u-name").innerText = "Airdayz Creador";
-    document.getElementById("u-id").innerText = "ID: 12345678"; 
-    document.getElementById("u-avatar").innerText = "A";
+    if(document.getElementById("u-name")) document.getElementById("u-name").innerText = "Airdayz Creador";
+    if(document.getElementById("u-id")) document.getElementById("u-id").innerText = "ID: 12345678"; 
+    if(document.getElementById("u-avatar")) document.getElementById("u-avatar").innerText = "A";
 }
 
 function obtenerUserIdTelegramActual() {
@@ -106,15 +113,17 @@ function obtenerUserIdTelegramActual() {
 }
 
 function comprobarSiUsuarioEsPremium(userId) {
-    // Si el usuario tiene asignado al menos un bot que sea Premium en la DB, se le concede el rango global en la App
     return DIRECTORIO_BOTS_MAESTRO.some(bot => bot.ownerId === userId && bot.isPremium);
 }
 
+function obtenerCantidadBotsUsuario(userId) {
+    return DIRECTORIO_BOTS_MAESTRO.filter(bot => bot.ownerId === userId).length;
+}
+
 // =========================================================================
-// 👑 CONSTRUCTOR DE LA BARRA SUPERIOR PEGAJOSA (STICKY HEADER)
+// 👑 CONSTRUCTOR DE LA BARRA SUPERIOR PEGAJOSA (STICKY HEADER INVERTIDO)
 // =========================================================================
 function renderizarHeaderSuperiorPegajoso(nombre, avatarUrl, esPremium) {
-    // Eliminar header previo si existiera por seguridad
     const previo = document.getElementById("sticky-app-header");
     if (previo) previo.remove();
 
@@ -131,22 +140,28 @@ function renderizarHeaderSuperiorPegajoso(nombre, avatarUrl, esPremium) {
         ? `<img src="${avatarUrl}" class="header-avatar-img" alt="User">` 
         : `<div class="header-avatar-fallback">${inicial}</div>`;
 
+    const userId = obtenerUserIdTelegramActual();
+    const countBots = obtenerCantidadBotsUsuario(userId);
+
+    // Marca a la izquierda, Usuario y Contador de bots a la derecha del todo
     header.innerHTML = `
-        <div class="header-left-side" onclick="switchView('profile')">
+        <div class="header-left-side" onclick="switchView('catalog')">
+            <span class="header-brand-logo">Mundo Bots</span>
+        </div>
+        <div class="header-right-side" onclick="switchView('profile')">
+            <div class="header-user-meta" style="align-items: flex-end;">
+                <span class="header-welcome-text">Hola, ${nombre}</span>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                    <span class="header-bot-count-badge"><i data-lucide="bot" style="width:10px; height:10px; display:inline-block; vertical-align:middle; margin-right:2px;"></i>${countBots} ${countBots === 1 ? 'Bot' : 'Bots'}</span>
+                    ${badgeRango}
+                </div>
+            </div>
             <div class="header-avatar-wrapper">
                 ${avatarElemento}
             </div>
-            <div class="header-user-meta">
-                <span class="header-welcome-text">Hola, ${nombre}</span>
-                ${badgeRango}
-            </div>
-        </div>
-        <div class="header-right-side">
-            <span class="header-brand-logo">Mundo Bots</span>
         </div>
     `;
 
-    // Inyectar al principio de la aplicación de forma dinámica
     document.body.insertBefore(header, document.body.firstChild);
 }
 
@@ -162,7 +177,8 @@ function inyectarEstilosHeaderDinamico() {
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 16px; z-index: 9999; box-sizing: border-box;
         }
-        .header-left-side { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .header-left-side { cursor: pointer; }
+        .header-right-side { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .header-avatar-wrapper { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, #22d3ee, #06b6d4); display: flex; align-items: center; justify-content: center; border: 1.5px solid rgba(255,255,255,0.2); }
         .header-avatar-img { width: 100%; height: 100%; object-fit: cover; }
         .header-avatar-fallback { font-size: 0.85rem; font-weight: 800; color: #fff; }
@@ -171,16 +187,63 @@ function inyectarEstilosHeaderDinamico() {
         .user-badge-tag { font-size: 0.6rem; font-weight: 900; padding: 1px 6px; border-radius: 4px; width: max-content; letter-spacing: 0.3px; }
         .gratis-badge { background: rgba(255,255,255,0.08); color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); }
         .premium-badge { background: linear-gradient(90deg, #eab308, #ca8a04); color: #0f172a; box-shadow: 0 0 8px rgba(234,179,8,0.3); }
-        .header-brand-logo { font-size: 0.85rem; font-weight: 900; background: linear-gradient(90deg, #22d3ee, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-brand-logo { font-size: 0.95rem; font-weight: 900; background: linear-gradient(90deg, #22d3ee, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-bot-count-badge { font-size: 0.6rem; font-weight: 700; background: rgba(34,211,238,0.15); color: #22d3ee; padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(34,211,238,0.3); }
+        
+        /* Sistema de Alertas Toast */
+        #toast-master-container { position: fixed; top: 68px; left: 50%; transform: translateX(-50%); z-index: 10005; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 360px; pointer-events: none; }
+        .toast-card { padding: 10px 14px; background: #1e293b; border-left: 4px solid #3b82f6; color: #fff; font-size: 0.78rem; font-weight: 600; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); animation: slideDownToast 0.3s ease-out forwards; pointer-events: auto; }
+        .toast-card.toast-success { border-left-color: #10b981; }
+        .toast-card.toast-error { border-left-color: #ef4444; }
+        .toast-card.toast-warning { border-left-color: #f59e0b; }
+        @keyframes slideDownToast { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Estilos Módulo Perfil */
+        .profile-sub-card { background: #1e293b; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+        .sub-grid-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+        .metric-sub-box { background: rgba(15,23,42,0.6); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.04); }
+        .metric-sub-title { font-size: 0.65rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
+        .metric-sub-value { font-size: 0.9rem; font-weight: 800; margin-top: 2px; }
+        
+        /* UI de Selección de Periodo */
+        .period-selector-wrapper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0; }
+        .period-pill { background: #111827; border: 1px solid rgba(255,255,255,0.1); padding: 6px 2px; border-radius: 8px; text-align: center; cursor: pointer; color: #94a3b8; font-size: 0.65rem; font-weight: 700; transition: all 0.2s; }
+        .period-pill.active { background: linear-gradient(135deg, #eab308, #ca8a04); color: #0f172a; border-color: transparent; font-weight: 800; box-shadow: 0 0 8px rgba(234,179,8,0.25); }
     `;
     document.head.appendChild(style);
+}
+
+// =========================================================================
+// 📯 SISTEMA INTERNO DE MENSAJES TOAST SENSITIVOS
+// =========================================================================
+function inyectarContenedorToast() {
+    if (document.getElementById("toast-master-container")) return;
+    const container = document.createElement("div");
+    container.id = "toast-master-container";
+    document.body.appendChild(container);
+}
+
+function lanzarToast(mensaje, tipo = "info") {
+    const container = document.getElementById("toast-master-container");
+    if (!container) return;
+
+    const toast = document.createElement("div");
+    toast.className = `toast-card toast-${tipo}`;
+    toast.innerText = mensaje;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transition = "opacity 0.3s ease";
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }
 
 // =========================================================================
 // 🛠️ CONTROLADOR UNIFICADO PARA ENLACES (Evita bloqueos en Telegram)
 // =========================================================================
 function abrirEnlaceSeguroTelegram(url) {
-    // Forzamos openLink (enlace web externo) en lugar de openTelegramLink
     if (window.Telegram?.WebApp?.openLink) {
         window.Telegram.WebApp.openLink(url); 
     } else {
@@ -249,13 +312,6 @@ function setCategoryFilter(catName) {
 
 function obtenerBotsProcesados() {
     return [...DIRECTORIO_BOTS_MAESTRO].sort((a, b) => (b.isPremium ? 1 : 0) - (a.isPremium ? 1 : 0));
-}
-
-function reordenarCatalogoPor(criterio) {
-    if (criterio === 'rating') {
-        DIRECTORIO_BOTS_MAESTRO.sort((a, b) => b.rating - a.rating);
-        filtrarCatalogoEnCaliente();
-    }
 }
 
 function filtrarCatalogoEnCaliente() {
@@ -352,23 +408,26 @@ function conmutarDespliegueTarjeta(cardIdCompleto) {
 }
 
 function lanzarBotTelegram(username) {
+    lanzarToast(`Iniciando @${username}...`, "info");
     const url = `https://t.me/${username}?start=webapp_directory`;
     abrirEnlaceSeguroTelegram(url);
 }
 
 // =========================================================================
-// ❤️ GESTIÓN DE FAVORITOS SINCRONIZADA EN TIEMPO REAL (Solución al Bug)
+// ❤️ GESTIÓN DE FAVORITOS SINCRONIZADA
 // =========================================================================
 function alternarEstadoFavorito(botId) {
     let favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || [];
+    let agregado = false;
     if (favorites.includes(botId)) {
         favorites = favorites.filter(id => id !== botId);
+        lanzarToast("Eliminado de favoritos", "warning");
     } else {
         favorites.push(botId);
+        lanzarToast("Añadido a favoritos ❤️", "success");
     }
     localStorage.setItem("gplus_fav_bots", JSON.stringify(favorites));
     
-    // SOLUCCIÓN AL BUG: Se fuerzan ambos repintados en paralelo sin importar dónde esté parado el usuario
     filtrarCatalogoEnCaliente();
     renderizarVistaFavoritos();
 }
@@ -377,7 +436,6 @@ function renderizarVistaFavoritos() {
     const grid = document.getElementById("favorites-grid");
     if (!grid) return;
     const favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || [];
-
     const botsFavoritos = DIRECTORIO_BOTS_MAESTRO.filter(b => favorites.includes(b.id));
 
     if (botsFavoritos.length === 0) {
@@ -394,63 +452,36 @@ function renderizarVistaFavoritos() {
 }
 
 // =========================================================================
-// ➕ ENVIAR BOT AL CHAT DE SOPORTE DEL ADMINISTRADOR (@Airdayz)
-// =========================================================================
-function enviarFormularioBotAlAdmin() {
-    const userId = obtenerUserIdTelegramActual();
-    const titulo = document.getElementById("f-title").value.trim();
-    const username = document.getElementById("f-user").value.trim();
-    const idioma = document.getElementById("f-lang").value.trim();
-    const corta = document.getElementById("f-short").value.trim();
-    const larga = document.getElementById("f-long").value.trim();
-
-    if (!titulo || !username || !idioma || !corta || !larga) {
-        alert("❌ Por favor, rellena todos los campos del formulario para procesar tu solicitud.");
-        return;
-    }
-
-    const textoMensaje = `SOLICITUD DE NUEVO BOT - Creador ID: ${userId} - Nombre: ${titulo} - Username: @${username} - Idioma: ${idioma} - Desc. Corta: ${corta} - Desc. Larga: ${larga}. Hola Airdayz, revisa mi bot para indexarlo en el directorio.`;
-
-    const url = `https://t.me/Airdayz?text=${encodeURIComponent(textoMensaje)}`;
-    abrirEnlaceSeguroTelegram(url);
-}
-
-// =========================================================================
-// 👑 MÓDULO TIENDA PUBLICITARIA
-// =========================================================================
-function solicitarCompraComercial(nombreServicio) {
-    const userId = obtenerUserIdTelegramActual();
-    const textoLimpio = `Hola Airdayz, quiero adquirir el servicio PREMIUM para mi bot. Mi ID de usuario es ${userId} y el servicio elegido es ${nombreServicio}. Indícame los pasos para el pago.`;
-    
-    const url = `https://t.me/Airdayz?text=${encodeURIComponent(textoLimpio)}`;
-    abrirEnlaceSeguroTelegram(url);
-}
-
-// =========================================================================
-// 👤 PANEL DE CONTROL DEL CREADOR (CONEXIÓN MANUAL POR ID)
+// 👤 PANEL DE CONTROL DEL CREADOR & TARJETA DE SUSCRIPCIÓN COMPLETA
 // =========================================================================
 function renderizarPanelCreador() {
+    const userId = obtenerUserIdTelegramActual();
+    const esPremium = comprobarSiUsuarioEsPremium(userId);
+    const countBots = obtenerCantidadBotsUsuario(userId);
+    
+    // Forzar render del módulo de suscripciones integrado en el perfil
+    renderizarModuloSuscripcionPerfil(esPremium, countBots);
+
     const grid = document.getElementById("creator-bots-grid");
     if (!grid) return;
-    const userId = obtenerUserIdTelegramActual();
 
     const misBots = DIRECTORIO_BOTS_MAESTRO.filter(b => b.ownerId === userId);
 
     if (misBots.length === 0) {
         grid.innerHTML = `
             <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; text-align: center; font-size: 0.75rem; color: #94a3b8;">
-                Aún no tienes bots vinculados a tu ID de Telegram en nuestro catálogo de forma manual.<br><br>
+                Aún no tienes bots vinculados a tu ID de Telegram en nuestro catálogo.<br><br>
                 <span style="color: #22d3ee; font-weight:800; cursor:pointer;" onclick="switchView('submit-bot')">👉 Enviar mi primer bot ahora</span>
             </div>
         `;
     } else {
         grid.innerHTML = misBots.map(bot => {
             let statusBadge = `<span style="color: #94a3b8; font-weight:800;">🟢 BÁSICO</span>`;
-            if (bot.isPremium) statusBadge = `<span style="color: #a855f7; font-weight:900;">👑 PREMIUM ACTIVADO</span>`;
+            if (bot.isPremium) statusBadge = `<span style="color: #a855f7; font-weight:900;">👑 PREMIUM</span>`;
             else if (bot.isVerified) statusBadge = `<span style="color: #22d3ee; font-weight:800;">🔵 VERIFICADO</span>`;
 
             return `
-                <div style="background: #111827; border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="background: #111827; border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; margin-bottom:8px;">
                     <div style="display:flex; justify-content: space-between; align-items: center;">
                         <span style="font-weight: 800; font-size: 0.85rem; color: #fff;">${bot.titulo} (@${bot.username})</span>
                         ${statusBadge}
@@ -464,19 +495,223 @@ function renderizarPanelCreador() {
     }
 }
 
+function renderizarModuloSuscripcionPerfil(esPremium, countBots) {
+    const wrapper = document.getElementById("user-subscription-module-wrapper");
+    if (!wrapper) return;
+
+    // Configuración de límites y fechas estables de simulación basadas en el año corriente 2026
+    const limitMax = esPremium ? 3 : 1;
+    const slotsTxt = `${countBots} / ${limitMax}`;
+    const fechaInicio = esPremium ? "01/01/2026" : "N/A";
+    const fechaFin = esPremium ? "31/12/2026" : "N/A";
+    
+    let CTA_BotonHTML = '';
+    if(!esPremium) {
+        CTA_BotonHTML = `
+            <button class="btn-launch" style="width:100%; margin-top:12px; background:linear-gradient(90deg, #eab308, #ca8a04); color:#0f172a; font-weight:800; border:none; padding:10px; border-radius:8px;" onclick="switchView('premium-store')">
+                🚀 Subir a Premium / Ver Planes de Pago
+            </button>
+        `;
+    }
+
+    wrapper.innerHTML = `
+        <div class="profile-sub-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
+                <h3 style="font-size:0.85rem; font-weight:800; color:#fff; margin:0;">Mi Suscripción</h3>
+                <span style="font-size:0.7rem; font-weight:900; padding:2px 8px; border-radius:20px; ${esPremium ? 'background:rgba(234,179,8,0.15); color:#eab308;' : 'background:rgba(255,255,255,0.1); color:#94a3b8;'}">
+                    ${esPremium ? 'PLAN PREMIUM' : 'PLAN GRATUITO'}
+                </span>
+            </div>
+            <div class="sub-grid-metrics">
+                <div class="metric-sub-box">
+                    <div class="metric-sub-title">Slots de Bots</div>
+                    <div class="metric-sub-value" style="${countBots > limitMax ? 'color:#f87171;' : 'color:#fff;'}">${slotsTxt}</div>
+                </div>
+                <div class="metric-sub-box">
+                    <div class="metric-sub-title">Periodo Activo</div>
+                    <div class="metric-sub-value" style="font-size:0.75rem; color:#cbd5e1;">${esPremium ? 'Anual' : 'Indefinido'}</div>
+                </div>
+                <div class="metric-sub-box">
+                    <div class="metric-sub-title">Fecha Inicio</div>
+                    <div class="metric-sub-value" style="font-size:0.75rem; color:#94a3b8;">${fechaInicio}</div>
+                </div>
+                <div class="metric-sub-box">
+                    <div class="metric-sub-title">Fecha Vencimiento</div>
+                    <div class="metric-sub-value" style="font-size:0.75rem; color:#94a3b8;">${fechaFin}</div>
+                </div>
+            </div>
+            ${CTA_BotonHTML}
+        </div>
+    `;
+}
+
+// =========================================================================
+// 🛒 CALCULADORA DE CONTRATACIÓN EN TIENDA PREMIUM (DINÁMICA 2026)
+// =========================================================================
+function actualizarCalculoContratacionPremium(meses) {
+    // Deseleccionar todos los botones del selector
+    document.querySelectorAll('.period-pill').forEach(p => p.classList.remove('active'));
+    // Activar el seleccionado
+    document.getElementById(`pill-${meses}m`)?.classList.add('active');
+
+    let multiplicadorFactor = 1.0;
+    if(meses === 3) multiplicadorFactor = 0.90; // 10% Descuento
+    if(meses === 6) multiplicadorFactor = 0.80; // 20% Descuento
+    if(meses === 12) multiplicadorFactor = 0.70; // 30% Descuento
+
+    const precioBrutoMensual = PRECIO_BASE_PREMIUM_MES * meses;
+    const precioFinalCalculado = precioBrutoMensual * multiplicadorFactor;
+
+    const divContenedorTotal = document.getElementById("premium-total-price-display");
+    if(divContenedorTotal) {
+        divContenedorTotal.innerHTML = `
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding:10px; border-radius:8px; margin-top:10px; text-align:center;">
+                <span style="font-size:0.7rem; color:#94a3b8; display:block;">TOTAL A PAGAR (${meses} ${meses === 1 ? 'Mes' : 'Meses'})</span>
+                <span style="font-size:1.3rem; font-weight:900; color:#eab308;">${precioFinalCalculado.toFixed(2)} €</span>
+                ${meses > 1 ? `<span style="font-size:0.6rem; color:#10b981; display:block; margin-top:2px;">¡Ahorro del ${(100 - (multiplicadorFactor*100)).toFixed(0)}% aplicado!</span>` : ''}
+            </div>
+        `;
+    }
+    
+    // Guardar temporalmente en el dataset del contenedor para la orden final
+    const btnCompra = document.getElementById("btn-comprar-premium-action");
+    if(btnCompra) {
+        btnCompra.setAttribute("data-selected-period", `${meses} meses`);
+        btnCompra.setAttribute("data-selected-price", `${precioFinalCalculado.toFixed(2)} EUR`);
+    }
+}
+
+function procesarCompraPremiumDesdeUI() {
+    const btnCompra = document.getElementById("btn-comprar-premium-action");
+    const periodo = btnCompra?.getAttribute("data-selected-period") || "1 mes";
+    const total = btnCompra?.getAttribute("data-selected-price") || "9.99 EUR";
+    
+    const userId = obtenerUserIdTelegramActual();
+    lanzarToast("Generando orden de pago segura...", "info");
+
+    const textoLimpio = `SOLICITUD DE ALTA PREMIUM - Comprador ID: ${userId} - Periodo: ${periodo} - Importe Acordado: ${total}. Hola Airdayz, quiero validar mi pago de suscripción para el catálogo.`;
+    
+    const url = `https://t.me/Airdayz?text=${encodeURIComponent(textoLimpio)}`;
+    abrirEnlaceSeguroTelegram(url);
+}
+
+// =========================================================================
+// 🎉 MOTOR DE CONFETI Y CELEBRACIONES POR LOGROS
+// =========================================================================
+function comprobarYDispararConfetiLogro() {
+    const userId = obtenerUserIdTelegramActual();
+    const count = obtenerCantidadBotsUsuario(userId);
+
+    // Si el usuario tiene bots indexados y nunca se le ha premiado con la explosión visual
+    if (count > 0 && !localStorage.getItem(`gplus_confeti_disparado_${userId}`)) {
+        localStorage.setItem(`gplus_confeti_disparado_${userId}`, "true");
+        
+        // Crear Canvas temporal para la física de partículas
+        dispararEfectoVisualConfetiFisico();
+        
+        setTimeout(() => {
+            alert(`🎉 ¡ENHORABUENA! 🎉\n\nHemos verificado con éxito tus credenciales de desarrollador. Tu bot ya se encuentra totalmente indexado en Mundo Bots.\n\n¡Sigue creciendo dentro del ecosistema!`);
+            lanzarToast("¡Logro de creador desbloqueado! 👑", "success");
+        }, 600);
+    }
+}
+
+function dispararEfectoVisualConfetiFisico() {
+    const canvas = document.createElement("canvas");
+    canvas.style.position = "fixed";
+    canvas.style.top = "0"; canvas.style.left = "0";
+    canvas.style.width = "100vw"; canvas.style.height = "100vh";
+    canvas.style.pointerEvents = "none"; canvas.style.zindex = "100000";
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particulas = [];
+    const colores = ["#22d3ee", "#3b82f6", "#eab308", "#a855f7", "#10b981", "#f43f5e"];
+
+    for (let i = 0; i < 120; i++) {
+        particulas.push({
+            x: canvas.width / 2,
+            y: canvas.height / 2 - 50,
+            vx: (Math.random() - 0.5) * 14,
+            vy: (Math.random() - 0.7) * 16 - 4,
+            radius: Math.random() * 5 + 4,
+            color: colores[Math.floor(Math.random() * colores.length)],
+            alpha: 1,
+            rotation: Math.random() * 360,
+            rotationSpeed: (Math.random() - 0.5) * 10
+        });
+    }
+
+    function renderFrame() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let vivas = false;
+
+        particulas.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.38; // Gravedad acelerada
+            p.alpha -= 0.012;
+            p.rotation += p.rotationSpeed;
+
+            if (p.alpha > 0) {
+                vivas = true;
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.radius, -p.radius, p.radius * 2, p.radius * 2);
+                ctx.restore();
+            }
+        });
+
+        if (vivas) {
+            requestAnimationFrame(renderFrame);
+        } else {
+            canvas.remove();
+        }
+    }
+    renderFrame();
+}
+
+// =========================================================================
+// ➕ ENVIAR FORMULARIOS & ACCIONES AUXILIARES SOLICITUDES
+// =========================================================================
+function enviarFormularioBotAlAdmin() {
+    const userId = obtenerUserIdTelegramActual();
+    const titulo = document.getElementById("f-title").value.trim();
+    const username = document.getElementById("f-user").value.trim();
+    const idioma = document.getElementById("f-lang").value.trim();
+    const corta = document.getElementById("f-short").value.trim();
+    const larga = document.getElementById("f-long").value.trim();
+
+    if (!titulo || !username || !idioma || !corta || !larga) {
+        lanzarToast("Por favor, rellena todos los campos", "error");
+        return;
+    }
+
+    lanzarToast("Redirigiendo a soporte de envío...", "info");
+    const textoMensaje = `SOLICITUD DE NUEVO BOT - Creador ID: ${userId} - Nombre: ${titulo} - Username: @${username} - Idioma: ${idioma} - Desc. Corta: ${corta} - Desc. Larga: ${larga}. Hola Airdayz, revisa mi bot para indexarlo en el directorio.`;
+
+    const url = `https://t.me/Airdayz?text=${encodeURIComponent(textoMensaje)}`;
+    abrirEnlaceSeguroTelegram(url);
+}
+
 function solicitarModificacionCambioBot(idInterno, username) {
     const userId = obtenerUserIdTelegramActual();
+    lanzarToast("Abriendo solicitud de edición...", "info");
     const texto = `SOLICITUD DE MODIFICACION - Bot ID: ${idInterno} - Username: @${username} - Creador ID: ${userId}. Hola Airdayz, quiero modificar los datos o el plan de este bot.`;
     
     const url = `https://t.me/Airdayz?text=${encodeURIComponent(texto)}`;
     abrirEnlaceSeguroTelegram(url);
 }
 
-// =========================================================================
-// 📯 INTERACCIONES AUXILIARES GLOBALES
-// =========================================================================
 function lanzarReporteBot(username) {
     const userId = obtenerUserIdTelegramActual();
+    lanzarToast("Abriendo reporte de abuso...", "warning");
     const texto = `REPORTE DE ABUSO - Bot Reportado: @${username} - Reportado por ID: ${userId}. Hola Airdayz, este bot presenta fallos o irregularidades.`;
     
     const url = `https://t.me/Airdayz?text=${encodeURIComponent(texto)}`;
@@ -484,10 +719,8 @@ function lanzarReporteBot(username) {
 }
 
 function dispararAvisoValoracion() {
-    const confirmar = confirm("¿Quieres dejar tu reseña oficial?\n\nTu valoración real ayuda a mantener la transparencia del ecosistema. Serás redirigido a nuestro canal oficial @Mundo_Bot para publicar tu opinión en los comentarios.");
-    if (confirmar) {
-        abrirEnlaceSeguroTelegram("https://t.me/Mundo_Bot");
-    }
+    lanzarToast("Redirigiendo a comunidad...", "info");
+    abrirEnlaceSeguroTelegram("https://t.me/Mundo_Bot");
 }
 
 // =========================================================================
@@ -497,4 +730,9 @@ document.addEventListener("DOMContentLoaded", () => {
     inicializarDatosTelegram();
     renderizarFiltrosCategorias();
     filtrarCatalogoEnCaliente();
+    
+    // Si la inicialización del DOM arranca en la vista de tienda premium, activar cálculo base
+    if(document.getElementById("premium-total-price-display")) {
+        actualizarCalculoContratacionPremium(1);
+    }
 });
