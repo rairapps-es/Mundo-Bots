@@ -97,6 +97,25 @@ function obtenerUserIdTelegramActual() {
 }
 
 // =========================================================================
+// 🛠️ CONTROLADOR UNIFICADO PARA ENLACES (Previene bloqueos de Telegram Desktop)
+// =========================================================================
+function abrirEnlaceSeguroTelegram(url) {
+    if (window.Telegram?.WebApp?.openTelegramLink) {
+        window.Telegram.WebApp.openTelegramLink(url); // Métodos nativos oficiales
+    } else {
+        window.open(url, '_blank'); // Respaldo para PC / Web local
+    }
+}
+
+function abrirEnlaceExternoWeb(url) {
+    if (window.Telegram?.WebApp?.openLink) {
+        window.Telegram.WebApp.openLink(url); // Abre enlaces webs externos sin colgar la app
+    } else {
+        window.open(url, '_blank');
+    }
+}
+
+// =========================================================================
 // 🔄 ENRUTADOR DINÁMICO DE PESTAÑAS (switchView)
 // =========================================================================
 function switchView(viewId) {
@@ -198,8 +217,8 @@ function construirHtmlTarjetaBot(bot, contextoLlamada) {
     if (bot.isPremium) {
         botonesPremiumExtendidos = `
             <div class="extended-buttons">
-                ${bot.url_web ? `<button class="btn-ext" onclick="event.stopPropagation(); window.open('${bot.url_web}', '_blank')"><i data-lucide="globe"></i> Visitar Web</button>` : ''}
-                ${bot.url_soporte ? `<button class="btn-ext" onclick="event.stopPropagation(); window.open('${bot.url_soporte}', '_blank')"><i data-lucide="help-circle"></i> Soporte Ofic.</button>` : ''}
+                ${bot.url_web ? `<button class="btn-ext" onclick="event.stopPropagation(); abrirEnlaceExternoWeb('${bot.url_web}')"><i data-lucide="globe"></i> Visitar Web</button>` : ''}
+                ${bot.url_soporte ? `<button class="btn-ext" onclick="event.stopPropagation(); abrirEnlaceSeguroTelegram('${bot.url_soporte}')"><i data-lucide="help-circle"></i> Soporte Ofic.</button>` : ''}
             </div>
         `;
     }
@@ -257,7 +276,8 @@ function conmutarDespliegueTarjeta(cardIdCompleto) {
 }
 
 function lanzarBotTelegram(username) {
-    window.open(`https://t.me/${username}?start=webapp_directory`, '_blank');
+    const url = `https://t.me/${username}?start=webapp_directory`;
+    abrirEnlaceSeguroTelegram(url);
 }
 
 // =========================================================================
@@ -325,7 +345,8 @@ function enviarFormularioBotAlAdmin() {
         `=========================\n` +
         `Hola Airdayz, envío los datos de mi bot para que verifiques mi propiedad y lo indexes manualmente en el directorio de la app.`;
 
-    window.open(`https://t.me/Airdayz?text=${encodeURIComponent(textoMensaje)}`, '_blank');
+    const url = `https://t.me/Airdayz?text=${encodeURIComponent(textoMensaje)}`;
+    abrirEnlaceSeguroTelegram(url);
 }
 
 // =========================================================================
@@ -342,7 +363,8 @@ function solicitarCompraComercial(nombreServicio) {
         `=========================\n` +
         `Hola @Airdayz, estoy interesado en adquirir esta mejora para potenciar el rendimiento de mis bots. Indícame cómo realizar el pago.`;
     
-    window.open(`https://t.me/Airdayz?text=${encodeURIComponent(texto)}`, '_blank');
+    const url = `https://t.me/Airdayz?text=${encodeURIComponent(texto)}`;
+    abrirEnlaceSeguroTelegram(url);
 }
 
 // =========================================================================
@@ -394,7 +416,9 @@ function solicitarModificacionCambioBot(idInterno, username) {
         `▪️ Creador ID: ${userId}\n` +
         `=========================\n` +
         `Hola @Airdayz, quiero solicitar una modificación de datos o cambiar el plan contratado para este bot registrado.`;
-    window.open(`https://t.me/Airdayz?text=${encodeURIComponent(texto)}`, '_blank');
+    
+    const url = `https://t.me/Airdayz?text=${encodeURIComponent(texto)}`;
+    abrirEnlaceSeguroTelegram(url);
 }
 
 // =========================================================================
@@ -403,13 +427,15 @@ function solicitarModificacionCambioBot(idInterno, username) {
 function lanzarReporteBot(username) {
     const userId = obtenerUserIdTelegramActual();
     const texto = `🚨 REPORTE DE ABUSO O MAL FUNCIONAMIENTO\n=========================\n▪️ Bot Reportado: @${username}\n▪️ Reportado por ID: ${userId}\n=========================\nHola Airdayz, informo que este bot presenta irregularidades en el servicio. Solicito revisión de las políticas de la comunidad.`;
-    window.open(`https://t.me/Airdayz?text=${encodeURIComponent(texto)}`, '_blank');
+    
+    const url = `https://t.me/Airdayz?text=${encodeURIComponent(texto)}`;
+    abrirEnlaceSeguroTelegram(url);
 }
 
 function dispararAvisoValoracion() {
     const confirmar = confirm("¿Quieres dejar tu reseña oficial?\n\nTu valoración real ayuda a mantener la transparencia del ecosistema. Serás redirigido a nuestro canal oficial @Mundo_Bot para publicar tu opinión en los comentarios.");
     if (confirmar) {
-        window.open("https://t.me/Mundo_Bot", "_blank");
+        abrirEnlaceSeguroTelegram("https://t.me/Mundo_Bot");
     }
 }
 
