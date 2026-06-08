@@ -238,47 +238,67 @@ function construirHtmlTarjetaBot(bot, contextualId) {
     const badgeVerificado = bot.isVerified ? `<span class="badge-verified"><i data-lucide="badge-check" style="width:14px; height:14px; margin-left:2px; display:inline-block; vertical-align:middle;"></i></span>` : "";
     
     const domCardId = `card-${contextualId}-${bot.id}`;
+    const shareMenuId = `share-${contextualId}-${bot.id}`;
+    const urlBotTelegram = `https://t.me/${bot.username}`;
 
     return `
-    <div class="bot-card ${bot.isPremium ? 'premium-card' : ''}" id="${domCardId}">
-        <div class="bot-card-header" onclick="toggleAcordeonTarjetaUnica('${domCardId}')">
-            <img src="${bot.logo}" class="bot-logo" alt="Logo">
-            <div class="bot-info-main">
-                <div class="bot-title-row" style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
-                    <span class="bot-title" style="font-weight:800; color:#fff;">${bot.titulo}</span>
-                    ${badgeVerificado}
-                    ${badgePremium}
+        <div class="bot-card ${bot.isPremium ? 'premium-card' : ''}" id="${domCardId}">
+            <div class="bot-card-header" onclick="toggleAcordeonTarjetaUnica('${domCardId}')">
+                <img src="${bot.logo}" class="bot-logo" alt="Logo">
+                <div class="bot-info-main">
+                    <div class="bot-title-row" style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+                        <span class="bot-title" style="font-weight:800; color:#fff;">${bot.titulo}</span>
+                        ${badgeVerificado}
+                        ${badgePremium}
+                    </div>
+                    <div class="bot-meta-row" style="font-size:0.7rem; color:#64748b; margin-top:2px;">
+                        <span class="bot-stars" onclick="event.stopPropagation(); dispararAvisoValoracion();" style="cursor:pointer; color:#eab308;">⭐ ${bot.rating}</span>
+                        <span>•</span>
+                        <span>${bot.idioma}</span>
+                    </div>
+                    <p class="bot-desc-short" style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">${bot.descripcion_corta}</p>
                 </div>
-                <div class="bot-meta-row" style="font-size:0.7rem; color:#64748b; margin-top:2px;">
-                    <span class="bot-stars" onclick="event.stopPropagation(); dispararAvisoValoracion();" style="cursor:pointer; color:#eab308;">⭐ ${bot.rating}</span>
-                    <span>•</span>
-                    <span>${bot.idioma}</span>
-                </div>
-                <p class="bot-desc-short" style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">${bot.descripcion_corta}</p>
-            </div>
-            <div class="bot-actions-right" onclick="event.stopPropagation();" style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-                <button class="btn-fav-heart ${esFav}" onclick="alternarEstadoFavorito('${bot.id}')" style="background:none; border:none; cursor:pointer;">
-                    <i data-lucide="heart" style="width:18px; height:18px; fill:${favorites.includes(bot.id) ? '#ef4444' : 'none'}; color:${favorites.includes(bot.id) ? '#ef4444' : '#64748b'}"></i>
-                </button>
-                <button class="btn-launch" onclick="abrirEnlaceSeguroTelegram('https://t.me/${bot.username}')" style="padding:4px 10px; font-size:0.7rem; font-weight:700; border-radius:6px; cursor:pointer;">Abrir</button>
-            </div>
-        </div>
-        <div class="bot-card-body">
-            <div class="bot-body-content" style="border-top:1px solid rgba(255,255,255,0.05);">
-                <p style="color:#cbd5e1; font-size:0.75rem; line-height:1.4;">${bot.descripcion_larga}</p>
-                <div class="bot-tags-row" style="display:flex; gap:4px; margin-top:4px; flex-wrap:wrap;">
-                    ${bot.categorias.map(c => `<span class="tag-pill" style="font-size:0.6rem; padding:2px 6px; background:rgba(255,255,255,0.05); color:#94a3b8; border-radius:4px;">${c}</span>`).join('')}
-                </div>
-                <div class="extended-buttons" style="display:flex; gap:6px; margin-top:4px;">
-                    ${bot.url_web ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_web}')">🌐 Web</button>` : ''}
-                    ${bot.url_soporte ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_soporte}')">🛡️ Soporte</button>` : ''}
-                    <button class="btn-ext" style="background:rgba(239,68,68,0.05); color:#f43f5e; border:1px solid rgba(239,68,68,0.15);" onclick="lanzarReporteBot('${bot.username}')">⚠️ Reportar</button>
+                <div class="bot-actions-right" onclick="event.stopPropagation();" style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <!-- Botón Compartir -->
+                        <button class="btn-share-icon" onclick="toggleMenuCompartir('${shareMenuId}')" style="background:none; border:none; cursor:pointer; padding:2px;">
+                            <i data-lucide="share-2" style="width:17px; height:17px; color:#94a3b8;"></i>
+                        </button>
+                        <!-- Botón Favorito -->
+                        <button class="btn-fav-heart ${esFav}" onclick="alternarEstadoFavorito('${bot.id}')" style="background:none; border:none; cursor:pointer; padding:2px;">
+                            <i data-lucide="heart" style="width:18px; height:18px; fill:${favorites.includes(bot.id) ? '#ef4444' : 'none'}; color:${favorites.includes(bot.id) ? '#ef4444' : '#64748b'}"></i>
+                        </button>
+                    </div>
+                    <button class="btn-launch" onclick="abrirEnlaceSeguroTelegram('${urlBotTelegram}')" style="padding:4px 10px; font-size:0.7rem; font-weight:700; border-radius:6px; cursor:pointer;">Abrir</button>
                 </div>
             </div>
-        </div>
-    </div>
-`;
 
+            <!-- Menú Desplegable Compartir Redes -->
+            <div id="${shareMenuId}" class="share-social-menu" onclick="event.stopPropagation();">
+                <div class="share-social-grid">
+                    <button onclick="compartirEnRedes('telegram', '${bot.titulo}', '${urlBotTelegram}')" class="share-btn tg"><i data-lucide="send"></i> Telegram</button>
+                    <button onclick="compartirEnRedes('twitter', '${bot.titulo}', '${urlBotTelegram}')" class="share-btn tw"><i data-lucide="twitter"></i> X</button>
+                    <button onclick="compartirEnRedes('facebook', '${bot.titulo}', '${urlBotTelegram}')" class="share-btn fb"><i data-lucide="facebook"></i> Facebook</button>
+                    <button onclick="compartirEnRedes('reddit', '${bot.titulo}', '${urlBotTelegram}')" class="share-btn rd"><i data-lucide="message-square"></i> Reddit</button>
+                    <button onclick="copiarAlPortapapeles('${urlBotTelegram}')" class="share-btn cp"><i data-lucide="copy"></i> Copiar</button>
+                </div>
+            </div>
+
+            <div class="bot-card-body">
+                <div class="bot-body-content" style="border-top:1px solid rgba(255,255,255,0.05);">
+                    <p style="color:#cbd5e1; font-size:0.75rem; line-height:1.4;">${bot.descripcion_larga}</p>
+                    <div class="bot-tags-row" style="display:flex; gap:4px; margin-top:4px; flex-wrap:wrap;">
+                        ${bot.categorias.map(c => `<span class="tag-pill" style="font-size:0.6rem; padding:2px 6px; background:rgba(255,255,255,0.05); color:#94a3b8; border-radius:4px;">${c}</span>`).join('')}
+                    </div>
+                    <div class="extended-buttons" style="display:flex; gap:6px; margin-top:4px;">
+                        ${bot.url_web ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_web}')">🌐 Web</button>` : ''}
+                        ${bot.url_soporte ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_soporte}')">🛡️ Soporte</button>` : ''}
+                        <button class="btn-ext" style="background:rgba(239,68,68,0.05); color:#f43f5e; border:1px solid rgba(239,68,68,0.15);" onclick="lanzarReporteBot('${bot.username}')">⚠️ Reportar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 function toggleAcordeonTarjetaUnica(domId) {
@@ -635,7 +655,77 @@ function dispararAvisoValoracion() {
 }
 
 // =========================================================================
-// DISPARADOR DOM READY DE SEGURIDAD
+// 🚀 SISTEMA GLOBAL DE COMPARTIR EN REDES Y PORTAPAPELES
+// =========================================================================
+function toggleMenuCompartir(menuId) {
+    const menu = document.getElementById(menuId);
+    if (!menu) return;
+    
+    // Cerrar cualquier otro menú de compartir abierto para mantener limpia la interfaz
+    document.querySelectorAll('.share-social-menu').forEach(m => {
+        if(m.id !== menuId) m.classList.remove('is-open');
+    });
+
+    menu.classList.toggle('is-open');
+}
+
+function compartirEnRedes(red, tituloBot, urlBot) {
+    const mensajeBase = `¡DESCUBRE ESTE BOT EN MUNDO BOTS! 🤖✨\n\n👉 ${tituloBot}\nEntra e interactúa directamente desde aquí:`;
+    
+    let shareUrl = "";
+    
+    switch(red) {
+        case 'telegram':
+            shareUrl = `https://t.me/share/url?url=${encodeURIComponent(urlBot)}&text=${encodeURIComponent(mensajeBase)}`;
+            break;
+        case 'twitter':
+            shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(mensajeBase + " " + urlBot)}`;
+            break;
+        case 'facebook':
+            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(urlBot)}`;
+            break;
+        case 'reddit':
+            shareUrl = `https://www.reddit.com/submit?url=${encodeURIComponent(urlBot)}&title=${encodeURIComponent(mensajeBase)}`;
+            break;
+    }
+    
+    if(shareUrl) {
+        abrirEnlaceSeguroTelegram(shareUrl);
+    }
+}
+
+function copiarAlPortapapeles(texto) {
+    const mensajeCompleto = `¡DESCUBRE ESTE BOT EN MUNDO BOTS! 🤖✨\n👉 ${texto}`;
+    
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(mensajeCompleto).then(() => {
+            lanzarToast("📋 ¡Enlace copiado al portapapeles!", "success");
+        }).catch(() => {
+            fallbackCopiarTexto(mensajeCompleto);
+        });
+    } else {
+        fallbackCopiarTexto(mensajeCompleto);
+    }
+}
+
+function fallbackCopiarTexto(texto) {
+    const textArea = document.createElement("textarea");
+    textArea.value = texto;
+    textArea.style.position = "fixed"; 
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        lanzarToast("📋 ¡Enlace copiado al portapapeles!", "success");
+    } catch (err) {
+        lanzarToast("❌ No se pudo copiar automáticamente", "error");
+    }
+    document.body.removeChild(textArea);
+}
+
+// =========================================================================
+// DISPARADOR DOM READY DE SEGURIDAD (DEJA SOLO ESTE AL FINAL)
 // =========================================================================
 document.addEventListener("DOMContentLoaded", () => {
     if (window.lucide) window.lucide.createIcons();
