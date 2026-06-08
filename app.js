@@ -240,44 +240,45 @@ function construirHtmlTarjetaBot(bot, contextualId) {
     const domCardId = `card-${contextualId}-${bot.id}`;
 
     return `
-        <div class="bot-card ${bot.isPremium ? 'premium-card' : ''}" id="${domCardId}">
-            <div class="bot-card-header" onclick="toggleAcordeonTarjetaUnica('${domCardId}')">
-                <img src="${bot.logo}" class="bot-logo" alt="Logo">
-                <div class="bot-info-main">
-                    <div class="bot-title-row" style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
-                        <span class="bot-title" style="font-weight:800; color:#fff;">${bot.titulo}</span>
-                        ${badgeVerificado}
-                        ${badgePremium}
-                    </div>
-                    <div class="bot-meta-row" style="font-size:0.7rem; color:#64748b; margin-top:2px;">
-                        <span class="bot-stars" onclick="event.stopPropagation(); dispararAvisoValoracion();" style="cursor:pointer; color:#eab308;">⭐ ${bot.rating}</span>
-   <span>•</span>
-                        <span>${bot.idioma}</span>
-                    </div>
-                    <p class="bot-desc-short" style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">${bot.descripcion_corta}</p>
+    <div class="bot-card ${bot.isPremium ? 'premium-card' : ''}" id="${domCardId}">
+        <div class="bot-card-header" onclick="toggleAcordeonTarjetaUnica('${domCardId}')">
+            <img src="${bot.logo}" class="bot-logo" alt="Logo">
+            <div class="bot-info-main">
+                <div class="bot-title-row" style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+                    <span class="bot-title" style="font-weight:800; color:#fff;">${bot.titulo}</span>
+                    ${badgeVerificado}
+                    ${badgePremium}
                 </div>
-                <div class="bot-actions-right" onclick="event.stopPropagation();" style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
-                    <button class="btn-fav-heart ${esFav}" onclick="alternarEstadoFavorito('${bot.id}')" style="background:none; border:none; cursor:pointer;">
-                        <i data-lucide="heart" style="width:18px; height:18px; fill:${favorites.includes(bot.id) ? '#ef4444' : 'none'}; color:${favorites.includes(bot.id) ? '#ef4444' : '#64748b'}"></i>
-                    </button>
-                    <button class="btn-launch" onclick="abrirEnlaceSeguroTelegram('https://t.me/${bot.username}')" style="padding:4px 10px; font-size:0.7rem; font-weight:700; border-radius:6px; cursor:pointer;">Abrir</button>
+                <div class="bot-meta-row" style="font-size:0.7rem; color:#64748b; margin-top:2px;">
+                    <span class="bot-stars" onclick="event.stopPropagation(); dispararAvisoValoracion();" style="cursor:pointer; color:#eab308;">⭐ ${bot.rating}</span>
+                    <span>•</span>
+                    <span>${bot.idioma}</span>
                 </div>
+                <p class="bot-desc-short" style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">${bot.descripcion_corta}</p>
             </div>
-            <div class="bot-card-body">
-                <div class="bot-body-content" style="padding:10px 0 4px 0; border-top:1px solid rgba(255,255,255,0.05); margin-top:8px;">
-                    <p style="color:#cbd5e1; font-size:0.75rem; line-height:1.4;">${bot.descripcion_larga}</p>
-                    <div class="bot-tags-row" style="display:flex; gap:4px; margin-top:8px; flex-wrap:wrap;">
-                        ${bot.categorias.map(c => `<span class="tag-pill" style="font-size:0.6rem; padding:2px 6px; background:rgba(255,255,255,0.05); color:#94a3b8; border-radius:4px;">${c}</span>`).join('')}
-                    </div>
-                    <div class="extended-buttons" style="display:flex; gap:6px; margin-top:10px;">
-                        ${bot.url_web ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_web}')">🌐 Web</button>` : ''}
-                        ${bot.url_soporte ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_soporte}')">🛡️ Soporte</button>` : ''}
-                        <button class="btn-ext" style="background:rgba(239,68,68,0.05); color:#f43f5e; border:1px solid rgba(239,68,68,0.15);" onclick="lanzarReporteBot('${bot.username}')">⚠️ Reportar</button>
-                    </div>
+            <div class="bot-actions-right" onclick="event.stopPropagation();" style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+                <button class="btn-fav-heart ${esFav}" onclick="alternarEstadoFavorito('${bot.id}')" style="background:none; border:none; cursor:pointer;">
+                    <i data-lucide="heart" style="width:18px; height:18px; fill:${favorites.includes(bot.id) ? '#ef4444' : 'none'}; color:${favorites.includes(bot.id) ? '#ef4444' : '#64748b'}"></i>
+                </button>
+                <button class="btn-launch" onclick="abrirEnlaceSeguroTelegram('https://t.me/${bot.username}')" style="padding:4px 10px; font-size:0.7rem; font-weight:700; border-radius:6px; cursor:pointer;">Abrir</button>
+            </div>
+        </div>
+        <div class="bot-card-body">
+            <div class="bot-body-content" style="border-top:1px solid rgba(255,255,255,0.05);">
+                <p style="color:#cbd5e1; font-size:0.75rem; line-height:1.4;">${bot.descripcion_larga}</p>
+                <div class="bot-tags-row" style="display:flex; gap:4px; margin-top:4px; flex-wrap:wrap;">
+                    ${bot.categorias.map(c => `<span class="tag-pill" style="font-size:0.6rem; padding:2px 6px; background:rgba(255,255,255,0.05); color:#94a3b8; border-radius:4px;">${c}</span>`).join('')}
+                </div>
+                <div class="extended-buttons" style="display:flex; gap:6px; margin-top:4px;">
+                    ${bot.url_web ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_web}')">🌐 Web</button>` : ''}
+                    ${bot.url_soporte ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_soporte}')">🛡️ Soporte</button>` : ''}
+                    <button class="btn-ext" style="background:rgba(239,68,68,0.05); color:#f43f5e; border:1px solid rgba(239,68,68,0.15);" onclick="lanzarReporteBot('${bot.username}')">⚠️ Reportar</button>
                 </div>
             </div>
         </div>
-    `;
+    </div>
+`;
+
 }
 
 function toggleAcordeonTarjetaUnica(domId) {
