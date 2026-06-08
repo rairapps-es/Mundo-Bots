@@ -313,6 +313,9 @@ function enviarFormularioBotAlAdmin() {
 // =========================================================================
 // 🛒 CALCULADORA Y COMPRA TIENDA PREMIUM (BLINDADO)
 // =========================================================================
+// =========================================================================
+// 🛒 CALCULADORA Y COMPRA TIENDA PREMIUM (VERSIÓN ULTRA-BLINDADA)
+// =========================================================================
 function actualizarCalculoContratacionPremium(meses) {
     document.querySelectorAll('.period-pill').forEach(p => p.classList.remove('active'));
     const pillActiva = document.getElementById(`pill-${meses}m`);
@@ -323,7 +326,7 @@ function actualizarCalculoContratacionPremium(meses) {
     if(meses === 6) multiplicadorFactor = 0.80; 
     if(meses === 12) multiplicadorFactor = 0.70; 
 
-    const precioFinalCalculado = (PRECIO_BASE_PREMIUM_MES * meses) * multiplicadorFactor;
+    const precioFinalCalculado = (9.99 * meses) * multiplicadorFactor;
 
     const divContenedorTotal = document.getElementById("premium-total-price-display");
     if(divContenedorTotal) {
@@ -346,20 +349,28 @@ function actualizarCalculoContratacionPremium(meses) {
 function procesarCompraPremiumDesdeUI() {
     const btnCompra = document.getElementById("btn-comprar-premium-action");
     
-    // Si por algún motivo está vacío, asignar valores seguros por defecto para que no falle jamás
-    const periodo = btnCompra?.getAttribute("data-selected-period") || "1 meses";
-    const total = btnCompra?.getAttribute("data-selected-price") || "9.99 EUR";
+    // Respaldo de seguridad absoluta por si el DOM no ha leído el atributo
+    let periodo = "1 meses";
+    let total = "9.99 EUR";
+
+    if (btnCompra && btnCompra.getAttribute("data-selected-period")) {
+        periodo = btnCompra.getAttribute("data-selected-period");
+        total = btnCompra.getAttribute("data-selected-price");
+    }
+    
     const userId = obtenerUserIdTelegramActual();
     
     lanzarToast("Redirigiendo al chat de Airdayz...", "success");
-    const textoLimpio = `Hola Airdayz, quiero adquirir la Suscripción Premium Avanzada para mi bot. Mi ID es ${userId}, he seleccionado el periodo de ${periodo} por un total de ${total}.`;
+    const textoLimpio = `Hola Airdayz, quiero adquirir la Suscripción Premium Avanzada para mi bot. Mi ID de usuario de Telegram es: ${userId}. He seleccionado el periodo de ${periodo} por un total de ${total}.`;
+    
     abrirEnlaceSeguroTelegram(`https://t.me/Airdayz?text=${encodeURIComponent(textoLimpio)}`);
 }
 
 function ejecutarCompraVerificadoDirecta() {
     const userId = obtenerUserIdTelegramActual();
     lanzarToast("Redirigiendo al chat de Airdayz...", "success");
-    const textoLimpio = `Hola Airdayz, quiero adquirir la Insignia Check de Verificado (Pago Único) para mi bot. Mi ID de usuario es ${userId}.`;
+    const textoLimpio = `Hola Airdayz, quiero adquirir la Insignia Check de Verificado (Pago Único) para mi bot. Mi ID de usuario es: ${userId}.`;
+    
     abrirEnlaceSeguroTelegram(`https://t.me/Airdayz?text=${encodeURIComponent(textoLimpio)}`);
 }
 
