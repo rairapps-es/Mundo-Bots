@@ -180,8 +180,9 @@ function inyectarEstilosHeaderDinamico() {
 // 🛠️ CONTROLADOR UNIFICADO PARA ENLACES (Evita bloqueos en Telegram)
 // =========================================================================
 function abrirEnlaceSeguroTelegram(url) {
-    if (window.Telegram?.WebApp?.openTelegramLink) {
-        window.Telegram.WebApp.openTelegramLink(url); 
+    // Forzamos openLink (enlace web externo) en lugar de openTelegramLink
+    if (window.Telegram?.WebApp?.openLink) {
+        window.Telegram.WebApp.openLink(url); 
     } else {
         window.open(url, '_blank'); 
     }
