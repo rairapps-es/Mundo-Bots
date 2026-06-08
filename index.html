@@ -310,6 +310,63 @@
             background: linear-gradient(180deg, #0f172a 0%, #150f2e 100%);
             box-shadow: 0 0 15px rgba(124, 58, 237, 0.2);
         }
+        /* =========================================================================
+   📤 ESTILOS PREMIUM PARA EL MENÚ DE COMPARTIR (CORREGIDO)
+   ========================================================================= */
+.share-social-menu {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(15, 23, 42, 0.4);
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* Esta clase la añade el JS al hacer click */
+.share-social-menu.is-open {
+    max-height: 80px; 
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.share-social-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    padding: 10px 14px;
+}
+
+.share-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    color: #94a3b8;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Ajuste para que los iconos de Lucide dentro del botón compartan tamaño */
+.share-btn svg, .share-btn i {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+/* Efectos visuales al pulsar en pantallas táctiles */
+.share-btn.tg:active { background: rgba(34, 158, 217, 0.15); color: #229ed9; border-color: rgba(34, 158, 217, 0.3); }
+.share-btn.tw:active { background: rgba(255, 255, 255, 0.1); color: #fff; border-color: rgba(255, 255, 255, 0.2); }
+.share-btn.fb:active { background: rgba(24, 119, 242, 0.15); color: #1877f2; border-color: rgba(24, 119, 242, 0.3); }
+.share-btn.rd:active { background: rgba(255, 69, 0, 0.15); color: #ff4500; border-color: rgba(255, 69, 0, 0.3); }
+.share-btn.cp:active { background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
+
     </style>
 </head>
 <body>
