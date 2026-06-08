@@ -367,7 +367,7 @@
         <button class="btn-submit-main" onclick="enviarFormularioBotAlAdmin()">Enviar Solicitud Directa 🚀</button>
     </main>
 
-    <main id="view-premium-store" class="app-view">
+        <main id="view-premium-store" class="app-view">
         <div style="text-align: center; margin-bottom: 20px;">
             <h3 style="font-weight: 900; font-size: 1.3rem; background: linear-gradient(90deg, var(--cyan), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">👑 PLANES DE PROMOCIÓN</h3>
             <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Maximiza la visibilidad de tu bot y multiplica tus conversiones</p>
@@ -387,7 +387,12 @@
                 <div class="period-pill" id="pill-12m" onclick="actualizarCalculoContratacionPremium(12)">1 Año</div>
             </div>
             
-            <div id="premium-total-price-display" style="margin-bottom: 14px;"></div>
+            <div id="premium-total-price-display" style="margin-bottom: 14px;">
+                <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); padding:10px; border-radius:8px; text-align:center;">
+                    <span style="font-size:0.65rem; color:#64748b; display:block; text-transform:uppercase; font-weight:700;">Total a pagar (1 Mes)</span>
+                    <span style="font-size:1.15rem; font-weight:900; color:#eab308;">9.99 €</span>
+                </div>
+            </div>
 
             <ul style="font-size: 0.75rem; color: #e2e8f0; list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; padding: 0;">
                 <li>🔥 <strong>Primeras Posiciones:</strong> Ubicación fija en el top del catálogo.</li>
@@ -397,13 +402,13 @@
                 <li>🤖 <strong>Capacidad extendida:</strong> Promociona hasta 3 bots simultáneos.</li>
             </ul>
             
-            <button id="btn-comprar-premium-action" class="btn-submit-main" style="background: var(--purple); color: #fff; width: 100%; padding: 10px; border-radius: 6px; font-weight: 800; cursor: pointer;" data-selected-period="1 meses" data-selected-price="9.99 EUR" onclick="procesarCompraPremiumDesdeUI()">Adquirir Plan Premium 👑</button>
+            <button id="btn-comprar-premium-action" class="btn-submit-main" style="background: var(--purple); color: #fff;" data-selected-period="1 meses" data-selected-price="9.99 EUR" onclick="procesarCompraPremiumDesdeUI()">Adquirir Plan Premium 👑</button>
         </div>
 
         <div class="shop-card">
             <span class="badge-premium-tag" style="position: absolute; right: 16px; top: 16px; background: var(--cyan); color:#000;">Pago Único</span>
             <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem; margin-bottom: 4px;">
-                <span class="badge-verified"><i data-lucide="badge-check" style="width:16px; height:16px;"></i></span> INSIGNIA DE VERIFICACIÓN
+                <span class="badge-verified">🔵</span> INSIGNIA DE VERIFICACIÓN
             </h4>
             <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px;">Genera confianza instantánea en la comunidad de Telegram.</p>
             <ul style="font-size: 0.75rem; color: #e2e8f0; list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; padding: 0;">
@@ -412,8 +417,8 @@
                 <li>📈 <strong>Aumento de CTR:</strong> Incrementa los clics orgánicos de usuarios reales.</li>
             </ul>
             
-            <button id="btn-comprar-premium-action" class="btn-submit-main" style="background: var(--purple); color: #fff; width: 100%; padding: 10px; border-radius: 6px; font-weight: 800; cursor: pointer;" data-selected-period="1 meses" data-selected-price="9.99 EUR" onclick="procesarCompraPremiumDesdeUI()">Adquirir Plan Premium 👑</button>
-  </div>
+            <button class="btn-submit-main" style="background: #1e293b; color:#fff; border: 1px solid rgba(255,255,255,0.1);" onclick="ejecutarCompraVerificadoDirecta()">Comprar Insignia Verificado 🔵</button>
+        </div>
     </main>
 
     <main id="view-profile" class="app-view">
