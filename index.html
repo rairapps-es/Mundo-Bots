@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mundo Bot Directory</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
         /* =========================================================================
@@ -35,6 +34,7 @@
             background-color: var(--bg-main);
             color: var(--text-main);
             overflow-x: hidden;
+            padding-top: 60px; /* Espacio para el header pegajoso inyectado por JS */
             padding-bottom: 90px; /* Espacio para la barra inferior */
         }
 
@@ -140,7 +140,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Cabecera Interna de la Tarjeta */
         .bot-card-header {
             padding: 14px;
             display: flex;
@@ -177,7 +176,6 @@
             text-overflow: ellipsis;
         }
 
-        /* Insignias */
         .badge-verified { color: var(--cyan); display: inline-flex; align-items: center; }
         .badge-premium-tag {
             font-size: 0.55rem;
@@ -228,18 +226,16 @@
             font-weight: 800;
         }
 
-        /* 🔓 ACORDEÓN DESPLEGABLE */
+        /* 🔓 ACORDEÓN DESPLEGABLE CON CONTROL CLASE .is-expanded */
         .bot-card-body {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(0, 0, 0, 0.15);
-            border-top: 0 solid var(--border);
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .bot-card.is-expanded .bot-card-body {
-            max-height: 500px; /* Altura máxima permisible al desplegar */
-            border-top-width: 1px;
+            max-height: 500px;
         }
 
         .bot-body-content {
@@ -291,58 +287,28 @@
 
         .cat-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 14px; }
         .cat-scroll::-webkit-scrollbar { display: none; }
-        .cat-btn { padding: 8px 14px; border-radius: 20px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
+        .cat-btn { padding: 8px 14px; border-radius: 20px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); font-size: 0.75rem; font-weight: 700; white-space: nowrap; cursor: pointer; }
         .cat-btn.active { background: var(--cyan); color: #000; border-color: var(--cyan); }
 
         .form-group { margin-bottom: 12px; }
         .form-label { font-size: 0.7rem; font-weight: 800; color: var(--cyan); text-transform: uppercase; margin-bottom: 6px; display: block; }
         .form-input, .form-textarea { width: 100%; background: #0b111e; border: 1px solid var(--border); padding: 10px; border-radius: 8px; color: #fff; font-size: 0.8rem; outline: none; }
-        .btn-submit-main { width: 100%; padding: 12px; background: var(--cyan); border: none; border-radius: 10px; font-weight: 800; font-size: 0.8rem; cursor: pointer; color: #000; }
+        .btn-submit-main { width: 100%; padding: 12px; background: var(--cyan); border: none; border-radius: 10px; font-weight: 800; font-size: 0.8rem; cursor: pointer; color: #000; display: block; text-align: center; }
 
-        .shop-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 16px; position: relative; }
-        .shop-card.premium { border-color: var(--purple); background: linear-gradient(180deg, #0f172a 0%, #150f2e 100%); }
-
+        /* Estructuras unificadas de la tienda */
         .shop-card {
-        background: var(--bg-card);
-        border: 1px solid #334155;
-        border-radius: 12px;
-        padding: 24px;
-        position: relative;
-        font-family: system-ui, -apple-system, sans-serif;
-        max-width: 350px;
-        margin-bottom: 20px;
-    }
-
-    .shop-card.premium {
-        border-color: var(--purple);
-        box-shadow: 0 0 15px rgba(124, 58, 237, 0.3);
-    }
-
-    .badge-premium-tag {
-        background: var(--purple);
-        color: #fff;
-        padding: 4px 8px;
-        border-radius: 20px;
-        font-size: 0.65rem;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-
-    .btn-submit-main {
-        width: 100%;
-        padding: 10px;
-        border: none;
-        border-radius: 6px;
-        font-weight: bold;
-        cursor: pointer;
-        background: #334155;
-        color: #fff;
-        transition: opacity 0.2s;
-    }
-
-    .btn-submit-main:hover {
-        opacity: 0.9;
-    }
+            background: var(--bg-card);
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .shop-card.premium {
+            border-color: var(--purple);
+            background: linear-gradient(180deg, #0f172a 0%, #150f2e 100%);
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -353,39 +319,36 @@
             <input type="text" id="main-search" class="search-input" placeholder="Buscar bots por nombre o palabra clave..." oninput="filtrarCatalogoEnCaliente()">
         </div>
         
-        <div class="cat-scroll" id="categories-container">
-            </div>
+        <div class="cat-scroll" id="categories-container"></div>
 
         <div style="display: flex; justify-content: space-between; margin: 4px 0 10px 0; font-size: 0.7rem; color: var(--text-muted);">
             <span id="counter-results">Mostrando 0 bots</span>
-            <span style="color: var(--cyan); cursor: pointer; font-weight: 800;" onclick="reordenarCatalogoPor('rating')">⭐ Mejor Valorados</span>
+            <span style="color: var(--cyan); cursor: pointer; font-weight: 800;" onclick="lanzarToast('Ordenación automática activada')">⭐ Destacados Primero</span>
         </div>
 
-        <div class="vault-grid" id="catalog-grid">
-            </div>
+        <div class="vault-grid" id="catalog-grid"></div>
     </main>
 
     <main id="view-favorites" class="app-view">
         <h3 style="font-weight: 800; margin-bottom: 4px;">❤️ Mis Bots Favoritos</h3>
         <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 16px;">Lista guardada en el almacenamiento local de tu dispositivo.</p>
-        <div class="vault-grid" id="favorites-grid">
-            </div>
+        <div class="vault-grid" id="favorites-grid"></div>
     </main>
 
     <main id="view-submit-bot" class="app-view">
         <h3 style="font-weight: 800; margin-bottom: 4px;">➕ Registrar Nuevo Bot</h3>
-        <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 20px;">Envía los datos del bot al Administrador. Tras verificar el pago y la propiedad, se agregará de forma manual al directorio.</p>
+        <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 20px;">Envía los datos del bot al Administrador. Tras verificar la propiedad, se agregará de forma manual al directorio.</p>
         
         <div style="background: rgba(56,189,248,0.03); border: 1px dashed var(--cyan); padding: 12px; border-radius: 10px; margin-bottom: 16px; font-size: 0.75rem; color: #cbd5e1; line-height: 1.4;">
             ℹ️ <strong>Nota de Seguridad:</strong> Tu ID único de desarrollador será vinculado automáticamente al formulario mediante la API nativa de Telegram.
         </div>
 
         <div class="form-group">
-            <label class="form-label">Nombre Comercial del Bot</label>
+            <label class="form-label">Nombre Comercial del Bot *</label>
             <input type="text" id="f-title" class="form-input" placeholder="Ej: Crypto Alerts Premium">
         </div>
         <div class="form-group">
-            <label class="form-label">Username de Telegram (@user)</label>
+            <label class="form-label">Username de Telegram * (@user)</label>
             <input type="text" id="f-user" class="form-input" placeholder="Ej: @CryptoAlerts_bot">
         </div>
         <div class="form-group">
@@ -393,7 +356,7 @@
             <input type="text" id="f-lang" class="form-input" placeholder="Ej: Español / Multi-idioma (ES/EN)">
         </div>
         <div class="form-group">
-            <label class="form-label">Descripción Breve (Para tarjeta cerrada)</label>
+            <label class="form-label">Descripción Breve * (Para tarjeta cerrada)</label>
             <input type="text" id="f-short" class="form-input" placeholder="Máximo 2 líneas de descripción impactante">
         </div>
         <div class="form-group">
@@ -404,65 +367,58 @@
         <button class="btn-submit-main" onclick="enviarFormularioBotAlAdmin()">Enviar Solicitud Directa 🚀</button>
     </main>
 
-    <main id="view-premium-shop" class="app-view">
+    <main id="view-premium-store" class="app-view">
         <div style="text-align: center; margin-bottom: 20px;">
             <h3 style="font-weight: 900; font-size: 1.3rem; background: linear-gradient(90deg, var(--cyan), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">👑 PLANES DE PROMOCIÓN</h3>
             <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Maximiza la visibilidad de tu bot y multiplica tus conversiones</p>
         </div>
 
-        <div class="shop-card premium" style="position: relative;">
-    <span class="badge-premium-tag" style="position: absolute; right: 16px; top: 16px;">Suscripción</span>
-    <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem;">
-        <span>🚀</span> PLAN AVANZADO PREMIUM
-    </h4>
-    <p style="font-size: 0.7rem; color: var(--text-muted); margin: 6px 0 12px 0;">Destaca sobre toda la competencia del mercado.</p>
-    
-    <div class="period-selector-wrapper" style="margin-bottom: 12px;">
-        <div class="period-pill active" id="pill-1m" onclick="actualizarCalculoContratacionPremium(1)">1 Mes</div>
-        <div class="period-pill" id="pill-3m" onclick="actualizarCalculoContratacionPremium(3)">3 Meses</div>
-        <div class="period-pill" id="pill-6m" onclick="actualizarCalculoContratacionPremium(6)">6 Meses</div>
-        <div class="period-pill" id="pill-12m" onclick="actualizarCalculoContratacionPremium(12)">1 Año</div>
-    </div>
-    
-    <div id="premium-total-price-display" style="margin-bottom: 14px;"></div>
+        <div class="shop-card premium">
+            <span class="badge-premium-tag" style="position: absolute; right: 16px; top: 16px;">Suscripción</span>
+            <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem; margin-bottom: 4px;">
+                <span>🚀</span> PLAN AVANZADO PREMIUM
+            </h4>
+            <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px;">Destaca sobre toda la competencia del mercado.</p>
+            
+            <div class="period-selector-wrapper">
+                <div class="period-pill active" id="pill-1m" onclick="actualizarCalculoContratacionPremium(1)">1 M</div>
+                <div class="period-pill" id="pill-3m" onclick="actualizarCalculoContratacionPremium(3)">3 M</div>
+                <div class="period-pill" id="pill-6m" onclick="actualizarCalculoContratacionPremium(6)">6 M</div>
+                <div class="period-pill" id="pill-12m" onclick="actualizarCalculoContratacionPremium(12)">1 Año</div>
+            </div>
+            
+            <div id="premium-total-price-display" style="margin-bottom: 14px;"></div>
 
-    <ul style="font-size: 0.75rem; color: #e2e8f0; list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; padding: 0;">
-        <li>🔥 <strong>Primeras Posiciones:</strong> Ubicación fija en el top del catálogo.</li>
-        <li>🎨 <strong>Diseño Neón:</strong> Tarjeta iluminada con animación arcoíris dinámica.</li>
-        <li>🏷️ <strong>Etiqueta "DESTACADO"</strong> integrada de forma visual.</li>
-        <li>📂 <strong>Categorización Múltiple:</strong> Indexación en hasta 3 categorías.</li>
-        <li>🌐 <strong>Ecosistema Total:</strong> Botón web y botón de soporte directo.</li>
-        <li>🤖 <strong>Capacidad extendida:</strong> Promociona hasta 3 bots simultáneos.</li>
-    </ul>
-    
-    <button id="btn-comprar-premium-action" class="btn-submit-main" style="background: var(--purple); color: #fff; width: 100%; padding: 10px; border-radius: 6px; font-weight: 800; cursor: pointer;" onclick="procesarCompraPremiumDesdeUI()">Adquirir Plan Premium 👑</button>
-</div>
+            <ul style="font-size: 0.75rem; color: #e2e8f0; list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; padding: 0;">
+                <li>🔥 <strong>Primeras Posiciones:</strong> Ubicación fija en el top del catálogo.</li>
+                <li>🎨 <strong>Diseño Neón:</strong> Tarjeta iluminada con animación dinámica.</li>
+                <li>🏷️ <strong>Etiqueta "PREMIUM"</strong> integrada de forma visual.</li>
+                <li>🌐 <strong>Ecosistema Total:</strong> Botón web y botón de soporte directo.</li>
+                <li>🤖 <strong>Capacidad extendida:</strong> Promociona hasta 3 bots simultáneos.</li>
+            </ul>
+            
+            <button id="btn-comprar-premium-action" class="btn-submit-main" style="background: var(--purple); color: #fff;" onclick="procesarCompraPremiumDesdeUI()">Adquirir Plan Premium 👑</button>
+        </div>
 
-<div class="shop-card" style="position: relative; margin-top: 20px;">
-    <span class="badge-premium-tag" style="position: absolute; right: 16px; top: 16px; background: var(--cyan); color:#000;">Pago Único</span>
-    <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem;">
-        <span class="badge-verified"><i data-lucide="badge-check"></i></span> INSIGNIA DE VERIFICACIÓN
-    </h4>
-    <p style="font-size: 0.7rem; color: var(--text-muted); margin: 6px 0 12px 0;">Genera confianza instantánea en la comunidad de Telegram.</p>
-    <ul style="font-size: 0.75rem; color: #e2e8f0; list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; padding: 0;">
-        <li>🔵 <strong>Check Azul Neón:</strong> Icono de validación junto al nombre de tu bot.</li>
-        <li>🛡️ <strong>Sello de Confianza:</strong> Certifica que el bot es seguro y legítimo.</li>
-        <li>📈 <strong>Aumento de CTR:</strong> Incrementa los clics orgánicos de usuarios reales.</li>
-    </ul>
-    
-    <button class="btn-submit-main" style="width: 100%; padding: 10px; border-radius: 6px; font-weight: 800; cursor: pointer;" onclick="ejecutarCompraVerificadoDirecta()">Comprar Insignia Verificado 🔵</button>
-</div>
-
-<!-- Scripts para los iconos -->
-<script src="https://unpkg.com/lucide@latest"></script>
-<script>
-  lucide.createIcons();
-</script>
+        <div class="shop-card">
+            <span class="badge-premium-tag" style="position: absolute; right: 16px; top: 16px; background: var(--cyan); color:#000;">Pago Único</span>
+            <h4 style="font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; font-size: 1rem; margin-bottom: 4px;">
+                <span class="badge-verified"><i data-lucide="badge-check" style="width:16px; height:16px;"></i></span> INSIGNIA DE VERIFICACIÓN
+            </h4>
+            <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px;">Genera confianza instantánea en la comunidad de Telegram.</p>
+            <ul style="font-size: 0.75rem; color: #e2e8f0; list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; padding: 0;">
+                <li>🔵 <strong>Check Azul Neón:</strong> Icono de validación junto al nombre de tu bot.</li>
+                <li>🛡️ <strong>Sello de Confianza:</strong> Certifica que el bot es seguro y legítimo.</li>
+                <li>📈 <strong>Aumento de CTR:</strong> Incrementa los clics orgánicos de usuarios reales.</li>
+            </ul>
+            
+            <button class="btn-submit-main" style="background: #1e293b; color:#fff; border: 1px solid rgba(255,255,255,0.1);" onclick="ejecutarCompraVerificadoDirecta()">Comprar Insignia Verificado 🔵</button>
+        </div>
     </main>
 
     <main id="view-profile" class="app-view">
         <div style="background: var(--bg-card); border: 1px solid var(--border); padding: 16px; border-radius: 16px; display: flex; align-items: center; gap: 14px; margin-bottom: 20px;">
-            <div id="u-avatar" style="width: 55px; height: 55px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; color: #fff;">
+            <div id="u-avatar" style="width: 55px; height: 55px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; color: #fff;">
                 ?
             </div>
             <div>
@@ -473,11 +429,10 @@
 
         <div id="user-subscription-module-wrapper"></div>
 
-        <h3 style="font-weight: 800; font-size: 0.95rem; text-transform: uppercase; color: var(--cyan); margin-bottom: 10px; letter-spacing: 0.5px;">🛠️ Panel de Control del Creador</h3>
-        <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 14px;">Lista de tus bots agregados manualmente al sistema por el Administrador.</p>
+        <h3 style="font-weight: 800; font-size: 0.95rem; text-transform: uppercase; color: var(--cyan); margin-bottom: 10px; letter-spacing: 0.5px;">🛠️ Panel del Creador</h3>
+        <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 14px;">Lista de tus bots vinculados manualmente a tu ID de Telegram.</p>
         
-        <div class="vault-grid" id="creator-bots-grid">
-            </div>
+        <div class="vault-grid" id="creator-bots-grid"></div>
     </main>
 
     <nav class="bottom-nav">
@@ -498,7 +453,7 @@
         </button>
     </nav>
 
-        <script src="app.js?v=2"></script>
-
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="app.js?v=2"></script>
 </body>
 </html>
