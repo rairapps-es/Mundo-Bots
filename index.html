@@ -227,25 +227,26 @@
         }
 
         /* 🔓 ACORDEÓN DESPLEGABLE CON CONTROL CLASE .is-expanded */
-        .bot-card-body {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(0, 0, 0, 0.2);
-        }
+.bot-card-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(0, 0, 0, 0.15);
+}
 
-        .bot-card.is-expanded .bot-card-body {
-            max-height: 500px;
-        }
+.bot-card.is-expanded .bot-card-body {
+    max-height: 500px; /* Permite que se despliegue por completo */
+}
 
-        .bot-body-content {
-            padding: 14px;
-            font-size: 0.8rem;
-            line-height: 1.4;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+/* El contenedor interno lleva el padding real para evitar saltos en la animación */
+.bot-body-content {
+    padding: 16px; /* Da un respiro simétrico arriba, abajo, izquierda y derecha */
+    font-size: 0.8rem;
+    line-height: 1.45;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
 
         .bot-tags-row { display: flex; flex-wrap: wrap; gap: 6px; }
         .tag-pill { background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; font-size: 0.65rem; color: var(--text-muted); font-weight: 600; }
