@@ -90,7 +90,6 @@ function inicializarDatosTelegram() {
     
     comprobarYDispararConfetiLogro();
     
-    // Forzar el cálculo inicial de la tienda al cargar por defecto
     setTimeout(() => { actualizarCalculoContratacionPremium(1); }, 100);
 }
 
@@ -213,7 +212,7 @@ function inyectarEstilosHeaderDinamico() {
 }
 
 // =========================================================================
-// 📯 INTERRUPTOR DE ENLACES SEGUROS (MÉTODO DEFINITIVO CORREGIDO)
+// 📯 INTERRUPTOR DE ENLACES SEGUROS
 // =========================================================================
 function abrirEnlaceSeguroTelegram(url) {
     if (window.Telegram?.WebApp?.openTelegramLink && url.includes("t.me")) {
@@ -248,15 +247,14 @@ function lanzarToast(mensaje, tipo = "info") {
 }
 
 // =========================================================================
-// 💳 CONSTRUCTOR CRUCIAL DE TARJETAS VISUALES DE BOTS (FALTABA EN TU SCRIPT)
+// 💳 CONSTRUCTOR MAESTRO DE TARJETAS (MANTENIENDO TUS CLASES EXACTAS)
 // =========================================================================
 function construirHtmlTarjetaBot(bot, contextualId) {
     const favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || [];
     const esFav = favorites.includes(bot.id) ? "is-favorite" : "";
     const badgePremium = bot.isPremium ? `<span class="badge-premium-tag">👑 Premium</span>` : "";
-    const badgeVerificado = bot.isVerified ? `<span class="badge-verified"><i data-lucide="badge-check" style="width:14px; height:14px; margin-left:2px;"></i></span>` : "";
+    const badgeVerificado = bot.isVerified ? `<span class="badge-verified"><i data-lucide="badge-check" style="width:14px; height:14px; margin-left:2px; display:inline-block; vertical-align:middle;"></i></span>` : "";
     
-    // Generamos un id único combinando el contexto para evitar duplicados si se renderiza en paralelo
     const domCardId = `card-${contextualId}-${bot.id}`;
 
     return `
@@ -264,35 +262,35 @@ function construirHtmlTarjetaBot(bot, contextualId) {
             <div class="bot-card-header" onclick="toggleAcordeonTarjetaUnica('${domCardId}')">
                 <img src="${bot.logo}" class="bot-logo" alt="Logo Bot">
                 <div class="bot-info-main">
-                    <div class="bot-title-row">
-                        <span class="bot-title">${bot.titulo}</span>
+                    <div class="bot-title-row" style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+                        <span class="bot-title" style="font-weight:800; color:#fff;">${bot.titulo}</span>
                         ${badgeVerificado}
                         ${badgePremium}
                     </div>
-                    <div class="bot-meta-row">
-                        <span class="bot-stars" onclick="event.stopPropagation(); dispararAvisoValoracion();">⭐ ${bot.rating}</span>
+                    <div class="bot-meta-row" style="font-size:0.7rem; color:#64748b; margin-top:2px;">
+                        <span class="bot-stars" onclick="event.stopPropagation(); dispararAvisoValoracion();" style="cursor:pointer; color:#eab308;">⭐ ${bot.rating}</span>
                         <span>•</span>
                         <span>${bot.idioma}</span>
                     </div>
-                    <p class="bot-desc-short">${bot.descripcion_corta}</p>
+                    <p class="bot-desc-short" style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">${bot.descripcion_corta}</p>
                 </div>
-                <div class="bot-actions-right" onclick="event.stopPropagation();">
-                    <button class="btn-fav-heart ${esFav}" onclick="alternarEstadoFavorito('${bot.id}')">
-                        <i data-lucide="heart" style="width:20px; height:20px; fill:${esFav ? '#ef4444' : 'none'}"></i>
+                <div class="bot-actions-right" onclick="event.stopPropagation();" style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+                    <button class="btn-fav-heart ${esFav}" onclick="alternarEstadoFavorito('${bot.id}')" style="background:none; border:none; cursor:pointer;">
+                        <i data-lucide="heart" style="width:18px; height:18px; fill:${favorites.includes(bot.id) ? '#ef4444' : 'none'}; color:${favorites.includes(bot.id) ? '#ef4444' : '#64748b'}"></i>
                     </button>
-                    <button class="btn-launch" onclick="abrirEnlaceSeguroTelegram('https://t.me/${bot.username}')">Abrir</button>
+                    <button class="btn-launch" onclick="abrirEnlaceSeguroTelegram('https://t.me/${bot.username}')" style="padding:4px 10px; font-size:0.7rem; font-weight:700; border-radius:6px; cursor:pointer;">Abrir</button>
                 </div>
             </div>
             <div class="bot-card-body">
-                <div class="bot-body-content">
-                    <p style="color:#cbd5e1; font-size:0.78rem; font-family:inherit;">${bot.descripcion_larga}</p>
-                    <div class="bot-tags-row">
-                        ${bot.categorias.map(c => `<span class="tag-pill">${c}</span>`).join('')}
+                <div class="bot-body-content" style="padding:10px 0 4px 0; border-top:1px solid rgba(255,255,255,0.05); margin-top:8px;">
+                    <p style="color:#cbd5e1; font-size:0.75rem; line-height:1.4;">${bot.descripcion_larga}</p>
+                    <div class="bot-tags-row" style="display:flex; gap:4px; margin-top:8px; flex-wrap:wrap;">
+                        ${bot.categorias.map(c => `<span class="tag-pill" style="font-size:0.6rem; padding:2px 6px; background:rgba(255,255,255,0.05); color:#94a3b8; border-radius:4px;">${c}</span>`).join('')}
                     </div>
-                    <div class="extended-buttons">
-                        ${bot.url_web ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_web}')">🌐 Sitio Web</button>` : ''}
-                        ${bot.url_soporte ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_soporte}')">🛡️ Soporte</button>` : ''}
-                        <button class="btn-ext" style="color:#f43f5e;" onclick="lanzarReporteBot('${bot.username}')">⚠️ Reportar</button>
+                    <div class="extended-buttons" style="display:flex; gap:6px; margin-top:10px;">
+                        ${bot.url_web ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_web}')" style="flex:1; padding:6px; font-size:0.65rem; font-weight:700; background:rgba(255,255,255,0.03); color:#fff; border:1px solid rgba(255,255,255,0.08); border-radius:6px; cursor:pointer;">🌐 Web</button>` : ''}
+                        ${bot.url_soporte ? `<button class="btn-ext" onclick="abrirEnlaceSeguroTelegram('${bot.url_soporte}')" style="flex:1; padding:6px; font-size:0.65rem; font-weight:700; background:rgba(255,255,255,0.03); color:#fff; border:1px solid rgba(255,255,255,0.08); border-radius:6px; cursor:pointer;">🛡️ Soporte</button>` : ''}
+                        <button class="btn-ext" style="flex:1; padding:6px; font-size:0.65rem; font-weight:700; background:rgba(239,68,68,0.05); color:#f43f5e; border:1px solid rgba(239,68,68,0.15); border-radius:6px; cursor:pointer;" onclick="lanzarReporteBot('${bot.username}')">⚠️ Reportar</button>
                     </div>
                 </div>
             </div>
@@ -308,7 +306,7 @@ function toggleAcordeonTarjetaUnica(domId) {
 }
 
 // =========================================================================
-// ➕ REGISTRO Y ENVÍO DE FORMULARIO DE NUEVOS BOTS
+// ➕ CONTROLADOR FORMULARIO DE REGISTRO
 // =========================================================================
 function enviarFormularioBotAlAdmin() {
     const title = document.getElementById("f-title")?.value.trim();
@@ -323,25 +321,12 @@ function enviarFormularioBotAlAdmin() {
         return;
     }
 
-    lanzarToast("Procesando datos del formulario...", "info");
-    
-    const plantillaTexto = `➕ SOLICITUD DE NUEVO BOT:\n` +
-                           `- Nombre: ${title}\n` +
-                           `- Username: ${username}\n` +
-                           `- Idiomas: ${lang}\n` +
-                           `- Dev ID: ${userId}\n` +
-                           `- Breve: ${shortDesc}\n` +
-                           `- Detalle: ${longDesc}`;
-
-    const url = `https://t.me/Airdayz?text=${encodeURIComponent(plantillaTexto)}`;
-    
-    setTimeout(() => {
-        abrirEnlaceSeguroTelegram(url);
-    }, 400);
+    const plantillaTexto = `➕ SOLICITUD DE NUEVO BOT:\n- Nombre: ${title}\n- Username: ${username}\n- Idiomas: ${lang}\n- Dev ID: ${userId}\n- Breve: ${shortDesc}\n- Detalle: ${longDesc}`;
+    abrirEnlaceSeguroTelegram(`https://t.me/Airdayz?text=${encodeURIComponent(plantillaTexto)}`);
 }
 
 // =========================================================================
-// 👤 PANEL DE CONTROL DEL CREADOR (CON EXTENSIONES SOLICITADAS)
+// 👤 PERFIL Y SUSCRIPCIONES
 // =========================================================================
 function renderizarPanelCreador() {
     const userId = obtenerUserIdTelegramActual();
@@ -381,6 +366,7 @@ function renderizarPanelCreador() {
             `;
         }).join('');
     }
+    if (window.lucide) window.lucide.createIcons();
 }
 
 function renderizarModuloSuscripcionPerfil(esPremium, countBots) {
@@ -443,7 +429,7 @@ function renderizarModuloSuscripcionPerfil(esPremium, countBots) {
 }
 
 // =========================================================================
-// 🛒 CALCULADORA PREMIUM Y PASARELA DE TEXTO DINÁMICA
+// 🛒 CALCULADORA TIENDA PREMIUM
 // =========================================================================
 function actualizarCalculoContratacionPremium(meses) {
     document.querySelectorAll('.period-pill').forEach(p => p.classList.remove('active'));
@@ -482,24 +468,19 @@ function procesarCompraPremiumDesdeUI() {
     const userId = obtenerUserIdTelegramActual();
     
     lanzarToast("Redirigiendo al chat de Airdayz...", "success");
-
     const textoLimpio = `Hola Airdayz, quiero adquirir la Suscripción Premium Avanzada para mi bot. Mi ID es ${userId}, he seleccionado el periodo de ${periodo} por un total de ${total}.`;
-    
-    const url = `https://t.me/Airdayz?text=${encodeURIComponent(textoLimpio)}`;
-    abrirEnlaceSeguroTelegram(url);
+    abrirEnlaceSeguroTelegram(`https://t.me/Airdayz?text=${encodeURIComponent(textoLimpio)}`);
 }
 
 function ejecutarCompraVerificadoDirecta() {
     const userId = obtenerUserIdTelegramActual();
     lanzarToast("Redirigiendo al chat de Airdayz...", "success");
-    
     const textoLimpio = `Hola Airdayz, quiero adquirir la Insignia Check de Verificado (Pago Único) para mi bot. Mi ID de usuario es ${userId}.`;
-    const url = `https://t.me/Airdayz?text=${encodeURIComponent(textoLimpio)}`;
-    abrirEnlaceSeguroTelegram(url);
+    abrirEnlaceSeguroTelegram(`https://t.me/Airdayz?text=${encodeURIComponent(textoLimpio)}`);
 }
 
 // =========================================================================
-// 🎉 MOTOR DE CONFETI POR PRIMERA VEZ
+// 🎉 CONFETI
 // =========================================================================
 function comprobarYDispararConfetiLogro() {
     const userId = obtenerUserIdTelegramActual();
@@ -509,7 +490,7 @@ function comprobarYDispararConfetiLogro() {
         localStorage.setItem(`gplus_confeti_disparado_${userId}`, "true");
         dispararEfectoVisualConfetiFisico();
         setTimeout(() => {
-            alert(`🎉 ¡ENHORABUENA! 🎉\n\nHemos verificado con éxito tus credenciales de desarrollador. Tu bot ya se encuentra totalmente indexado en Mundo Bots.\n\n¡Sigue creciendo dentro del ecosistema!`);
+            alert(`🎉 ¡ENHORABUENA! 🎉\n\nHemos verificado con éxito tus credenciales de desarrollador. Tu bot ya se encuentra totalmente indexado en Mundo Bots.`);
             lanzarToast("¡Logro de creador desbloqueado! 👑", "success");
         }, 600);
     }
@@ -554,29 +535,41 @@ function dispararEfectoVisualConfetiFisico() {
     renderFrame();
 }
 
+// =========================================================================
+// 🔀 NAVEGACIÓN GENERAL PROTEGIDA
+// =========================================================================
 function switchView(viewId) {
     activeTabGlobal = viewId;
     document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active-view'));
     document.querySelectorAll('.nav-item').forEach(tab => tab.classList.remove('active-tab'));
     
-    // CORRECCIÓN: Si pulsa premium o la redirección del perfil busca 'premium-store', se activa el contenedor correcto
-    const viewName = viewId === 'premium-shop' ? 'premium-store' : viewId;
+    // Soporte cruzado para ID de vista de la tienda ('premium-shop' vs 'premium-store')
+    const viewName = (viewId === 'premium-shop' || viewId === 'premium-store') ? 'premium-store' : viewId;
+    const tabName = (viewId === 'premium-shop' || viewId === 'premium-store') ? 'premium-shop' : viewId;
+
     const activeView = document.getElementById(`view-${viewName}`);
-    
-    // Mantenemos sincronizado el id de la barra de navegación inferior
-    const activeTab = document.getElementById(`tab-${viewId}`) || document.getElementById(`tab-${viewName}`);
+    const activeTab = document.getElementById(`tab-${tabName}`);
     
     if (activeView) activeView.classList.add('active-view');
     if (activeTab) activeTab.classList.add('active-tab');
     
-    if (viewId === 'catalog') renderizarFiltrosCategorias();
-    if (viewId === 'favorites') renderizarVistaFavoritos();
-    if (viewId === 'profile') renderizarPanelCreador();
-    if (window.lucide) lucide.createIcons();
+    if (viewName === 'catalog') renderizarFiltrosCategorias();
+    if (viewName === 'favorites') renderizarVistaFavoritos();
+    if (viewName === 'profile') renderizarPanelCreador();
+    
+    // Forzar el procesado de iconos al cambiar de sección
+    if (window.lucide) window.lucide.createIcons();
 }
 
 function extraerCategoriasUnicas() { let cats = ["Todos"]; DIRECTORIO_BOTS_MAESTRO.forEach(bot => { bot.categorias.forEach(c => { if (!cats.includes(c)) cats.push(c); }); }); return cats; }
-function renderizarFiltrosCategorias() { const container = document.getElementById("categories-container"); if (!container) return; const lista = extraerCategoriasUnicas(); container.innerHTML = lista.map(cat => `<button class="cat-btn ${currentCategoryFilter === cat ? 'active' : ''}" onclick="setCategoryFilter('${cat}')">${cat}</button>`).join(''); }
+
+function renderizarFiltrosCategorias() { 
+    const container = document.getElementById("categories-container"); 
+    if (!container) return; 
+    const lista = extraerCategoriasUnicas(); 
+    container.innerHTML = lista.map(cat => `<button class="cat-btn ${currentCategoryFilter === cat ? 'active' : ''}" onclick="setCategoryFilter('${cat}')">${cat}</button>`).join(''); 
+}
+
 function setCategoryFilter(catName) { currentCategoryFilter = catName; renderizarFiltrosCategorias(); filtrarCatalogoEnCaliente(); }
 function obtenerBotsProcesados() { return [...DIRECTORIO_BOTS_MAESTRO].sort((a, b) => (b.isPremium ? 1 : 0) - (a.isPremium ? 1 : 0)); }
 
@@ -584,23 +577,52 @@ function filtrarCatalogoEnCaliente() {
     const query = document.getElementById("main-search")?.value.toLowerCase().trim() || ""; 
     const grid = document.getElementById("catalog-grid"); 
     if (!grid) return; 
+    
     const listaOrdenada = obtenerBotsProcesados(); 
     let botsFiltrados = listaOrdenada.filter(bot => { 
         return (currentCategoryFilter === "Todos" || bot.categorias.includes(currentCategoryFilter)) && (bot.titulo.toLowerCase().includes(query) || bot.username.toLowerCase().includes(query) || bot.descripcion_corta.toLowerCase().includes(query)); 
     }); 
-    if (document.getElementById("counter-results")) document.getElementById("counter-results").innerText = `Mostrando ${botsFiltrados.length} bots`; 
+    
+    const counter = document.getElementById("counter-results");
+    if (counter) counter.innerText = `Mostrando ${botsFiltrados.length} bots`; 
+    
     grid.innerHTML = botsFiltrados.map(bot => construirHtmlTarjetaBot(bot, 'cat')).join(''); 
-    if (window.lucide) lucide.createIcons(); 
+    if (window.lucide) window.lucide.createIcons(); 
 }
 
 function alternarEstadoFavorito(botId) { let favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || []; if (favorites.includes(botId)) { favorites = favorites.filter(id => id !== botId); lanzarToast("Eliminado de favoritos", "warning"); } else { favorites.push(botId); lanzarToast("Añadido a favoritos ❤️", "success"); } localStorage.setItem("gplus_fav_bots", JSON.stringify(favorites)); filtrarCatalogoEnCaliente(); renderizarVistaFavoritos(); if(activeTabGlobal === 'profile') renderizarPanelCreador(); }
-function renderizarVistaFavoritos() { const grid = document.getElementById("favorites-grid"); if (!grid) return; const favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || []; const botsFavoritos = DIRECTORIO_BOTS_MAESTRO.filter(b => favorites.includes(b.id)); if (botsFavoritos.length === 0) { grid.innerHTML = `<div style="text-align:center; padding: 40px; font-size: 0.8rem; color: #64748b;"><i data-lucide="heart" style="width:40px; height:40px; margin:0 auto 10px auto; opacity:0.3; display:block;"></i><p>No tienes ningún bot en favoritos.</p></div>`; } else { grid.innerHTML = botsFavoritos.map(bot => construirHtmlTarjetaBot(bot, 'fav')).join(''); } if (window.lucide) lucide.createIcons(); }
+
+function renderizarVistaFavoritos() { 
+    const grid = document.getElementById("favorites-grid"); 
+    if (!grid) return; 
+    const favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || []; 
+    const botsFavoritos = DIRECTORIO_BOTS_MAESTRO.filter(b => favorites.includes(b.id)); 
+    if (botsFavoritos.length === 0) { 
+        grid.innerHTML = `<div style="text-align:center; padding: 40px; font-size: 0.8rem; color: #64748b;"><i data-lucide="heart" style="width:40px; height:40px; margin:0 auto 10px auto; opacity:0.3; display:block;"></i><p>No tienes ningún bot en favoritos.</p></div>`; 
+    } else { 
+        grid.innerHTML = botsFavoritos.map(bot => construirHtmlTarjetaBot(bot, 'fav')).join(''); 
+    } 
+    if (window.lucide) window.lucide.createIcons(); 
+}
+
 function solicitarModificacionCambioBot(idInterno, username) { const userId = obtenerUserIdTelegramActual(); const texto = `SOLICITUD DE MODIFICACION - Bot ID: ${idInterno} - Username: @${username} - Creador ID: ${userId}. Hola Airdayz, quiero modificar los datos o el plan de este bot.`; abrirEnlaceSeguroTelegram(`https://t.me/Airdayz?text=${encodeURIComponent(texto)}`); }
 function lanzarReporteBot(username) { const userId = obtenerUserIdTelegramActual(); const texto = `REPORTE DE ABUSO - Bot Reportado: @${username} - Reportado por ID: ${userId}. Hola Airdayz, este bot presenta fallos o irregularidades.`; abrirEnlaceSeguroTelegram(`https://t.me/Airdayz?text=${encodeURIComponent(texto)}`); }
 function dispararAvisoValoracion() { const confirmar = confirm("¿Quieres dejar tu reseña oficial?\n\nSerás redirigido a nuestro canal oficial @Mundo_Bot."); if (confirmar) abrirEnlaceSeguroTelegram("https://t.me/Mundo_Bot"); }
 
+// =========================================================================
+// 🚀 INICIALIZADOR PROTEGIDO CONTRA ERRORES
+// =========================================================================
 document.addEventListener("DOMContentLoaded", () => {
+    // 1. Ejecutar Lucide inmediatamente para asegurar que el menú inferior cargue rápido los iconos
+    if (window.lucide) window.lucide.createIcons();
+
+    // 2. Correr la configuración e inyección del SDK de Telegram
     inicializarDatosTelegram();
     renderizarFiltrosCategorias();
     filtrarCatalogoEnCaliente();
+
+    // 3. Re-verificación de seguridad para asegurar el dibujado final de todos los iconos
+    setTimeout(() => {
+        if (window.lucide) window.lucide.createIcons();
+    }, 150);
 });
