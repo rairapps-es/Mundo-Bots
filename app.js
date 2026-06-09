@@ -401,9 +401,9 @@ function construirHtmlTarjetaBot(bot, contextualId) {
                         <button class="btn-share-icon" onclick="toggleMenuCompartir('${shareMenuId}')" style="background:none; border:none; cursor:pointer; padding:2px;">
                             <i data-lucide="share-2" style="width:17px; height:17px; color:#94a3b8;"></i>
                         </button>
-                        <button class="btn-fav-heart ${esFav}" onclick="alternarEstadoFavorito('${bot.id}')" style="background:none; border:none; cursor:pointer; padding:2px;">
-                            <i data-lucide="heart" style="width:18px; height:18px; fill:${favorites.includes(bot.id) ? '#ef4444' : 'none'}; color:${favorites.includes(bot.id) ? '#ef4444' : '#64748b'}"></i>
-                        </button>
+                        <button class="btn-fav-heart ${esFav}" onclick="event.stopPropagation(); alternarEstadoFavorito('${bot.id}')" style="background:none; border:none; cursor:pointer; padding:2px;">
+    <i data-lucide="heart" style="width:18px; height:18px; fill:${favorites.includes(bot.id) ? '#ef4444' : 'none'}; color:${favorites.includes(bot.id) ? '#ef4444' : '#64748b'}"></i>
+</button>
                     </div>
                     <button class="btn-launch" onclick="abrirEnlaceSeguroTelegram('${urlBotTelegram}')" style="padding:4px 10px; font-size:0.7rem; font-weight:700; border-radius:6px; cursor:pointer;">Abrir</button>
                 </div>
@@ -825,6 +825,33 @@ function renderizarVistaFavoritos() {
     } 
     if (window.lucide) window.lucide.createIcons(); 
 }
+
+function alternarEstadoFavorito(botId) {
+    // 1. Leer los favoritos actuales con tu clave exacta
+    let favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || [];
+    
+    // 2. Buscar si ya existe el bot en la lista
+    const index = favorites.indexOf(botId);
+    
+    if (index === -1) {
+        favorites.push(botId); // Si no estaba, lo añade
+    } else {
+        favorites.splice(index, 1); // Si ya estaba, lo quita
+    }
+    
+    // 3. Guardar la lista actualizada en LocalStorage
+    localStorage.setItem("gplus_fav_bots", JSON.stringify(favorites));
+    
+    // 4. 🔄 Sincronización inteligente de pantallas basada en tu activeTabGlobal
+    if (activeTabGlobal === 'catalog') {
+        // Si el usuario está en el catálogo, refrescamos los bots filtrados (cambiará el color del corazón)
+        filtrarCatalogoEnCaliente(); 
+    } else if (activeTabGlobal === 'favorites') {
+        // Si está en la pestaña de favoritos, volvemos a renderizar para que el bot desaparezca al instante
+        renderizarVistaFavoritos(); 
+    }
+}
+
 
 function solicitarModificacionCambioBot(idInterno, username) { 
     const userId = obtenerUserIdTelegramActual(); 
