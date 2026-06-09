@@ -118,7 +118,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
 
 let currentCategoryFilter = "Todos";
 let activeTabGlobal = "catalog";
-const PRECIO_BASE_PREMIUM_MES = 9.99;
+const PRECIO_BASE_PREMIUM_MES = 2.99;
 
 // =========================================================================
 // 🚀 CONEXIÓN TELEGRAM MINI APP SDK
@@ -314,7 +314,7 @@ function lanzarToast(mensaje, tipo = "info") {
 function construirHtmlTarjetaBot(bot, contextualId) {
     const favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || [];
     const esFav = favorites.includes(bot.id) ? "is-favorite" : "";
-    const badgePremium = bot.isPremium ? `<span class="badge-premium-tag">👑 Premium</span>` : "";
+    const badgePremium = bot.isPremium ? `<span class="badge-premium-tag">👑 DESTACADO</span>` : "";
     const badgeVerificado = bot.isVerified ? `<span class="badge-verified"><i data-lucide="badge-check" style="width:14px; height:14px; margin-left:2px; display:inline-block; vertical-align:middle;"></i></span>` : "";
     
     const domCardId = `card-${contextualId}-${bot.id}`;
@@ -427,7 +427,7 @@ function actualizarCalculoContratacionPremium(meses) {
     if(meses === 6) multiplicadorFactor = 0.80; 
     if(meses === 12) multiplicadorFactor = 0.70; 
 
-    const precioFinalCalculado = (9.99 * meses) * multiplicadorFactor;
+    const precioFinalCalculado = (2.99 * meses) * multiplicadorFactor;
 
     const divContenedorTotal = document.getElementById("premium-total-price-display");
     if(divContenedorTotal) {
@@ -452,7 +452,7 @@ function procesarCompraPremiumDesdeUI() {
     
     // Respaldo de seguridad absoluta por si el DOM no ha leído el atributo
     let periodo = "1 meses";
-    let total = "9.99 EUR";
+    let total = "2.99 EUR";
 
     if (btnCompra && btnCompra.getAttribute("data-selected-period")) {
         periodo = btnCompra.getAttribute("data-selected-period");
