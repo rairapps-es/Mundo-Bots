@@ -141,6 +141,9 @@ let currentCategoryFilter = "Todos";
 let activeTabGlobal = "catalog";
 const PRECIO_BASE_PREMIUM_MES = 2.99;
 
+// 👉 NUEVA VARIABLE GLOBAL PARA EL "VER MÁS"
+let itemsVisiblesCatalogo = 10; 
+
 // =========================================================================
 // 🚀 CONEXIÓN TELEGRAM MINI APP SDK
 // =========================================================================
@@ -720,6 +723,7 @@ function setCategoryFilter(catName) {
     filtrarCatalogoEnCaliente(); 
 }
 
+// Si ambos son iguales, mantienen su orden
 function filtrarCatalogoEnCaliente() { 
     const query = document.getElementById("main-search")?.value.toLowerCase().trim() || ""; 
     const grid = document.getElementById("catalog-grid"); 
@@ -731,33 +735,55 @@ function filtrarCatalogoEnCaliente() {
                (bot.titulo.toLowerCase().includes(query) || bot.username.toLowerCase().includes(query) || bot.descripcion_corta.toLowerCase().includes(query)); 
     }); 
     
-    // 2. CORRECCIÓN CRÍTICA: Ordenar para que los PREMIUM (Destacados) vayan SIEMPRE primero
+    // 2. Ordenar: Destacados (Premium) SIEMPRE primero
     botsFiltrados.sort((a, b) => {
-        if (a.isPremium && !b.isPremium) return -1; // Si 'a' es premium, va antes
-        if (!a.isPremium && b.isPremium) return 1;  // Si 'b' es premium, va antes
-        return 0;                                   // Si ambos son iguales, mantienen su orden
+        if (a.isPremium && !b.isPremium) return -1;
+        if (!a.isPremium && b.isPremium) return 1;
+        return 0;
     });
     
     const counter = document.getElementById("counter-results");
-    if (counter) counter.innerText = `Mostrando ${botsFiltrados.length} bots`; 
+    if (counter) counter.innerText = `Mostrando ${Math.min(itemsVisiblesCatalogo, botsFiltrados.length)} de ${botsFiltrados.length} bots`; 
     
-    // 3. Renderizar en el DOM
-    grid.innerHTML = botsFiltrados.map(bot => construirHtmlTarjetaBot(bot, 'cat')).join(''); 
+    // 3. Segmentar el array (Paginación de 10 en 10)
+    const botsAMostrar = botsFiltrados.slice(0, itemsVisiblesCatalogo);
+    
+    // 4. Renderizar las tarjetas segmentadas
+    let htmlResultado = botsAMostrar.map(bot => construirHtmlTarjetaBot(bot, 'cat')).join(''); 
+    
+    // 5. Agregar dinámicamente el botón "Ver más" si quedan elementos ocultos
+    const contenedorBoton = document.getElementById("pagination-trigger-container");
+    if (botsFiltrados.length > itemsVisiblesCatalogo) {
+        if (!contenedorBoton) {
+            htmlResultado += `
+                <div id="pagination-trigger-container" style="text-align:center; padding: 16px 0; width:100%;">
+                    <button class="btn-load-more" onclick="incrementarItemsVisiblesCatalogo()" style="background: rgba(34,211,238,0.1); border: 1px solid rgba(34,211,238,0.3); color: #22d3ee; padding: 10px 24px; font-size: 0.8rem; font-weight: 800; border-radius: 8px; cursor: pointer; transition: all 0.2s; width: 80%; max-width: 280px;">
+                        Ver más bots 🔽
+                    </button>
+                </div>
+            `;
+        }
+    } else {
+        // Si no hay más elementos, nos aseguramos de que el contenedor desaparezca
+        if (contenedorBoton) contenedorBoton.remove();
+    }
+    
+    grid.innerHTML = htmlResultado;
     if (window.lucide) window.lucide.createIcons(); 
 }
 
-function alternarEstadoFavorito(botId) { 
-    let favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || []; 
-    if (favorites.includes(botId)) { 
-        favorites = favorites.filter(id => id !== botId); 
-        lanzarToast("Eliminado de favoritos", "warning"); 
-    } else { 
-        favorites.push(botId); 
-        lanzarToast("Añadido a favoritos ❤️", "success"); 
-    } 
-    localStorage.setItem("gplus_fav_bots", JSON.stringify(favorites)); 
+// Función que dispara el botón "Ver más"
+function incrementarItemsVisiblesCatalogo() {
+    itemsVisiblesCatalogo += 10; // Incrementa de 10 en 10
+    filtrarCatalogoEnCaliente();
+}
+
+// Modificamos ligeramente el selector de categorías para resetear el paginador a 10
+function setCategoryFilter(catName) { 
+    currentCategoryFilter = catName; 
+    itemsVisiblesCatalogo = 10; // ⭐ Reset al cambiar de pestaña
+    renderizarFiltrosCategorias(); 
     filtrarCatalogoEnCaliente(); 
-    renderizarVistaFavoritos(); 
 }
 
 function renderizarVistaFavoritos() { 
