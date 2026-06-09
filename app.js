@@ -59,7 +59,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         descripcion_larga: "Una herramienta básica pero útil, conoce el id de Telegram de todos los chats solo renviando un mensaje de un usuario, canal, grupo o bot. Fácil, rapido y gratis.",
         categorias: ["Herramientas", "Entretenimiento"],
         idioma: "Inglés",
-        rating: 4.0,
+        rating: 4.1,
         isPremium: false,       
         isVerified: false,      
         ownerId: "1320481822",   
