@@ -14,8 +14,8 @@ const DIRECTORIO_BOTS_MAESTRO = [
         rating: 4.9,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
         isPremium: true,       
-        fechaInicioPremium: "2026-09-06", 
-        fechaFinPremium: "2027-09-07",    
+        fechaInicioPremium: "2026-06-09", 
+        fechaFinPremium: "2026-07-09",    
         isVerified: true,      
         ownerId: "1320417199",   
         url_web: "https://lista-golden.com/cleopatra",
@@ -33,8 +33,8 @@ const DIRECTORIO_BOTS_MAESTRO = [
         rating: 4.7,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
         isPremium: true,       
-        fechaInicioPremium: "2026-01-12", 
-        fechaFinPremium: "2027-01-12",    
+        fechaInicioPremium: "2026-06-09", 
+        fechaFinPremium: "2026-07-09",    
         isVerified: true,      
         ownerId: "1320417199",   
         url_web: "https://t.me/ListaGolden",
@@ -52,8 +52,8 @@ const DIRECTORIO_BOTS_MAESTRO = [
         rating: 4.4,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
         isPremium: false,       
-        fechaInicioPremium: "2026-01-12", 
-        fechaFinPremium: "2027-01-12",    
+        fechaInicioPremium: "2026-06-09", 
+        fechaFinPremium: "2026-07-09",    
         isVerified: false,      
         ownerId: "1328187199",   
         url_web: "",
