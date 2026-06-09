@@ -725,14 +725,23 @@ function filtrarCatalogoEnCaliente() {
     const grid = document.getElementById("catalog-grid"); 
     if (!grid) return; 
     
+    // 1. Filtrar por categoría y texto de búsqueda
     let botsFiltrados = DIRECTORIO_BOTS_MAESTRO.filter(bot => { 
         return (currentCategoryFilter === "Todos" || bot.categorias.includes(currentCategoryFilter)) && 
                (bot.titulo.toLowerCase().includes(query) || bot.username.toLowerCase().includes(query) || bot.descripcion_corta.toLowerCase().includes(query)); 
     }); 
     
+    // 2. CORRECCIÓN CRÍTICA: Ordenar para que los PREMIUM (Destacados) vayan SIEMPRE primero
+    botsFiltrados.sort((a, b) => {
+        if (a.isPremium && !b.isPremium) return -1; // Si 'a' es premium, va antes
+        if (!a.isPremium && b.isPremium) return 1;  // Si 'b' es premium, va antes
+        return 0;                                   // Si ambos son iguales, mantienen su orden
+    });
+    
     const counter = document.getElementById("counter-results");
     if (counter) counter.innerText = `Mostrando ${botsFiltrados.length} bots`; 
     
+    // 3. Renderizar en el DOM
     grid.innerHTML = botsFiltrados.map(bot => construirHtmlTarjetaBot(bot, 'cat')).join(''); 
     if (window.lucide) window.lucide.createIcons(); 
 }
