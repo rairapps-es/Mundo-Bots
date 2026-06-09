@@ -12,7 +12,10 @@ const DIRECTORIO_BOTS_MAESTRO = [
         categorias: ["IA", "Herramientas", "Entretenimiento"],
         idioma: "Español",
         rating: 4.9,
+         // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
         isPremium: true,       
+        fechaInicioPremium: "2026-01-12", // Fecha de activación
+        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
         isVerified: true,      
         ownerId: "1320417199",   
         url_web: "https://lista-golden.com/cleopatra",
@@ -28,7 +31,10 @@ const DIRECTORIO_BOTS_MAESTRO = [
         categorias: ["Herramientas", "Entretenimiento"],
         idioma: "Multi-idioma (EN/ES/IT/BR)",
         rating: 4.7,
+         // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
         isPremium: true,       
+        fechaInicioPremium: "2026-01-12", // Fecha de activación
+        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
         isVerified: true,      
         ownerId: "1320417199",   
         url_web: "https://t.me/ListaGolden",
@@ -44,9 +50,12 @@ const DIRECTORIO_BOTS_MAESTRO = [
         categorias: ["Herramientas", "Entretenimiento"],
         idioma: "Multi-idioma (EN/ES/IT/BR)",
         rating: 4.4,
-        isPremium: false,       
-        isVerified: false,      
-        ownerId: "132047272",   
+         // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
+        isPremium: true,       
+        fechaInicioPremium: "2026-01-12", // Fecha de activación
+        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
+        isVerified: true,      
+        ownerId: "1328187199",   
         url_web: "",
         url_soporte: ""
     },
@@ -60,9 +69,12 @@ const DIRECTORIO_BOTS_MAESTRO = [
         categorias: ["Herramientas", "Entretenimiento"],
         idioma: "Inglés",
         rating: 4.1,
-        isPremium: false,       
-        isVerified: false,      
-        ownerId: "1320481822",   
+         // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
+        isPremium: true,       
+        fechaInicioPremium: "2026-01-12", // Fecha de activación
+        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
+        isVerified: true,      
+        ownerId: "1320412772",   
         url_web: "",
         url_soporte: ""
     },
@@ -76,7 +88,10 @@ const DIRECTORIO_BOTS_MAESTRO = [
         categorias: ["Herramientas", "Entretenimiento"],
         idioma: "Multi-idioma (EN/ES/IT/BR)",
         rating: 4.5,
+         // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
         isPremium: true,       
+        fechaInicioPremium: "2026-01-12", // Fecha de activación
+        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
         isVerified: true,      
         ownerId: "1320417199",   
         url_web: "https://t.me/ListaGolden",
@@ -92,9 +107,12 @@ const DIRECTORIO_BOTS_MAESTRO = [
         categorias: ["Herramientas", "Entretenimiento"],
         idioma: "Multi-idioma (EN/ES/IT & More)",
         rating: 4.7,
-        isPremium: false,       
-        isVerified: false,      
-        ownerId: "1328182729",   
+         // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
+        isPremium: true,       
+        fechaInicioPremium: "2026-01-12", // Fecha de activación
+        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
+        isVerified: true,      
+        ownerId: "1329184199",   
         url_web: "",
         url_soporte: ""
     },
@@ -108,9 +126,12 @@ const DIRECTORIO_BOTS_MAESTRO = [
         categorias: ["Herramientas", "Entretenimiento"],
         idioma: "Multi-idioma (ES/EN/IT & more)",
         rating: 4.2,
-        isPremium: false,
-        isVerified: false,
-        ownerId: "82726622",
+         // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
+        isPremium: true,       
+        fechaInicioPremium: "2026-01-12", // Fecha de activación
+        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
+        isVerified: true,      
+        ownerId: "132047161",
         url_web: "",
         url_soporte: ""
     }
@@ -157,6 +178,27 @@ function inicializarDatosTelegram() {
     actualizarCalculoContratacionPremium(1);
 }
 
+/**
+ * Examina el catálogo maestro, busca bots premium del usuario y los degrada si ya vencieron.
+ * @param {string} userId - ID de Telegram del usuario actual.
+ */
+function verificarYActualizarVencimientosCatalogo(userId) {
+    // Obtener la fecha actual del sistema en formato ISO limpio (YYYY-MM-DD)
+    const fechaHoy = new Date().toISOString().split('T')[0];
+
+    DIRECTORIO_BOTS_MAESTRO.forEach(bot => {
+        // Si el bot pertenece al usuario, está marcado como Premium y tiene fecha de fin
+        if (bot.ownerId === userId && bot.isPremium && bot.fechaFinPremium) {
+            
+            // Comparación cronológica directa
+            if (fechaHoy > bot.fechaFinPremium) {
+                console.warn(`🚨 La ficha Premium del bot @${bot.username} ha expirado.`);
+                bot.isPremium = false; // Degradamos la ficha en caliente en la memoria del script
+            }
+        }
+    });
+}
+
 function cargarPerfilModoDesarrolloPC() {
     const esAdminPremium = comprobarSiUsuarioEsPremium("12345678");
     renderizarHeaderSuperiorPegajoso("Airdayz Creador", null, esAdminPremium);
@@ -174,7 +216,21 @@ function obtenerUserIdTelegramActual() {
 }
 
 function comprobarSiUsuarioEsPremium(userId) {
-    return DIRECTORIO_BOTS_MAESTRO.some(bot => bot.ownerId === userId && bot.isPremium);
+    // Primero limpiamos y validamos fechas en el catálogo
+    verificarYActualizarVencimientosCatalogo(userId);
+
+    // Buscamos si conserva algún bot que siga siendo premium
+    const botPremiumActivo = DIRECTORIO_BOTS_MAESTRO.find(bot => bot.ownerId === userId && bot.isPremium);
+    
+    if (botPremiumActivo) {
+        return {
+            esPremium: true,
+            fechaInicio: botPremiumActivo.fechaInicioPremium || "N/A",
+            fechaFin: botPremiumActivo.fechaFinPremium || "N/A"
+        };
+    }
+
+    return { esPremium: false, fechaInicio: "N/A", fechaFin: "N/A" };
 }
 
 function obtenerCantidadBotsUsuario(userId) {
@@ -493,7 +549,7 @@ function renderizarPanelCreador() {
     if (misBots.length === 0) {
         grid.innerHTML = `
             <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; text-align: center; font-size: 0.75rem; color: #94a3b8;">
-                Aún no tienes bots vinculados a tu ID en el catálogo.<br><br>
+                Aún no tienes bots vinculados en el catálogo.<br><br>
                 <span style="color: #22d3ee; font-weight:800; cursor:pointer;" onclick="switchView('submit-bot')">👉 Enviar mi primer bot ahora</span>
             </div>
         `;
@@ -519,16 +575,32 @@ function renderizarPanelCreador() {
     if (window.lucide) window.lucide.createIcons();
 }
 
-function renderizarModuloSuscripcionPerfil(esPremium, countBots) {
+/**
+ * Renderiza el módulo visual de suscripción leyendo los tiempos dinámicos del LocalStorage
+ * @param {boolean} esPremium - Flag de estado actual del usuario
+ * @param {number} countBots - Cantidad de bots que el usuario tiene indexados
+ * @param {string} fInicio - Fecha ISO de inicio de suscripción (ej: "2026-01-12")
+ * @param {string} fFin - Fecha ISO de vencimiento (ej: "2027-01-12")
+ */
+function renderizarModuloSuscripcionPerfil(esPremium, countBots, fInicio, fFin) {
     const wrapper = document.getElementById("user-subscription-module-wrapper");
     if (!wrapper) return; 
 
     const limitMax = esPremium ? 3 : 1;
     const slotsTxt = `${countBots} / ${limitMax}`;
-    const countFavs = obtenerCantidadFavoritos();
+    const countFavs = typeof obtenerCantidadFavoritos === 'function' ? obtenerCantidadFavoritos() : 0;
     
-    const fechaInicio = esPremium ? "12/01/2026" : "N/A";
-    const fechaFin = esPremium ? "12/01/2027" : "N/A";
+    // Función auxiliar interna para transformar YYYY-MM-DD a DD/MM/YYYY
+    const formatearFechaLatina = (fechaISO) => {
+        if (!fechaISO || fechaISO === "N/A") return "N/A";
+        const partes = fechaISO.split("-"); // [YYYY, MM, DD]
+        if(partes.length !== 3) return fechaISO;
+        return `${partes[2]}/${partes[1]}/${partes[0]}`; // Retorna DD/MM/YYYY
+    };
+
+    // Formatear dinámicamente las fechas pasadas por el almacenamiento
+    const fechaInicioDisplay = esPremium ? formatearFechaLatina(fInicio) : "N/A";
+    const fechaFinDisplay = esPremium ? formatearFechaLatina(fFin) : "N/A";
     
     let CTA_BotonHTML = '';
     if(!esPremium) {
@@ -540,31 +612,38 @@ function renderizarModuloSuscripcionPerfil(esPremium, countBots) {
     }
 
     wrapper.innerHTML = `
-        <div class="profile-sub-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px; margin-bottom:4px;">
+        <div class="profile-sub-card" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); padding:14px; border-radius:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px; margin-bottom:12px;">
                 <h3 style="font-size:0.8rem; font-weight:800; color:#fff; margin:0;">Estado de la Cuenta</h3>
                 <span style="font-size:0.6rem; font-weight:900; padding:2px 8px; border-radius:20px; ${esPremium ? 'background:rgba(234,179,8,0.15); color:#eab308;' : 'background:rgba(255,255,255,0.06); color:#94a3b8;'}">
                     ${esPremium ? 'PREMIUM VIP' : 'PLAN GRATUITO'}
                 </span>
             </div>
-            <div class="sub-grid-metrics">
+            <div class="sub-grid-metrics" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:8px;">
                 <div class="metric-sub-box">
-                    <div class="metric-sub-title">Slots Utilizados</div>
-                    <div class="metric-sub-value" style="${countBots > limitMax ? 'color:#f87171;' : 'color:#22d3ee;'}">${slotsTxt}</div>
+                    <div class="metric-sub-title" style="font-size:0.65rem; color:#64748b;">Slots Utilizados</div>
+                    <div class="metric-sub-value" style="font-size:0.9rem; font-weight:700; ${countBots > limitMax ? 'color:#f87171;' : 'color:#22d3ee;'}">${slotsTxt}</div>
                 </div>
                 <div class="metric-sub-box">
-                    <div class="metric-sub-title">Mis Bots Indexados</div>
-                    <div class="metric-sub-value">${countBots} total</div>
+                    <div class="metric-sub-title" style="font-size:0.65rem; color:#64748b;">Mis Bots Indexados</div>
+                    <div class="metric-sub-value" style="font-size:0.9rem; font-weight:700; color:#fff;">${countBots} total</div>
                 </div>
                 <div class="metric-sub-box">
-                    <div class="metric-sub-title">Favoritos Guardados</div>
-                    <div class="metric-sub-value" style="color:#f43f5e;">❤️ ${countFavs}</div>
+                    <div class="metric-sub-title" style="font-size:0.65rem; color:#64748b;">Favoritos Guardados</div>
+                    <div class="metric-sub-value" style="font-size:0.9rem; font-weight:700; color:#f43f5e;">❤️ ${countFavs}</div>
                 </div>
                 <div class="metric-sub-box">
-                    <div class="metric-sub-title">Periodo Duración</div>
-                    <div class="metric-sub-value" style="font-size:0.75rem;">${esPremium ? '12 Meses' : 'Permanente'}</div>
+                    <div class="metric-sub-title" style="font-size:0.65rem; color:#64748b;">Vencimiento VIP</div>
+                    <div class="metric-sub-value" style="font-size:0.75rem; font-weight:700; color:#eab308;">${fechaFinDisplay}</div>
                 </div>
             </div>
+            
+            ${esPremium ? `
+                <div style="font-size: 0.65rem; color: #64748b; text-align: center; margin-top: 8px;">
+                    Suscripción activa desde el: <b>${fechaInicioDisplay}</b>
+                </div>
+            ` : ''}
+
             ${CTA_BotonHTML}
         </div>
     `;
