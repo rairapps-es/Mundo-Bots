@@ -178,27 +178,6 @@ function inicializarDatosTelegram() {
     actualizarCalculoContratacionPremium(1);
 }
 
-/**
- * Examina el catálogo maestro, busca bots premium del usuario y los degrada si ya vencieron.
- * @param {string} userId - ID de Telegram del usuario actual.
- */
-function verificarYActualizarVencimientosCatalogo(userId) {
-    // Obtener la fecha actual del sistema en formato ISO limpio (YYYY-MM-DD)
-    const fechaHoy = new Date().toISOString().split('T')[0];
-
-    DIRECTORIO_BOTS_MAESTRO.forEach(bot => {
-        // Si el bot pertenece al usuario, está marcado como Premium y tiene fecha de fin
-        if (bot.ownerId === userId && bot.isPremium && bot.fechaFinPremium) {
-            
-            // Comparación cronológica directa
-            if (fechaHoy > bot.fechaFinPremium) {
-                console.warn(`🚨 La ficha Premium del bot @${bot.username} ha expirado.`);
-                bot.isPremium = false; // Degradamos la ficha en caliente en la memoria del script
-            }
-        }
-    });
-}
-
 function cargarPerfilModoDesarrolloPC() {
     const esAdminPremium = comprobarSiUsuarioEsPremium("12345678");
     renderizarHeaderSuperiorPegajoso("Airdayz Creador", null, esAdminPremium);
@@ -531,6 +510,26 @@ function ejecutarCompraVerificadoDirecta() {
     abrirEnlaceSeguroTelegram(`https://t.me/Airdayz?text=${encodeURIComponent(textoLimpio)}`);
 }
 
+/**
+ * Examina el catálogo maestro, busca bots premium del usuario y los degrada si ya vencieron.
+ * @param {string} userId - ID de Telegram del usuario actual.
+ */
+function verificarYActualizarVencimientosCatalogo(userId) {
+    // Obtener la fecha actual del sistema en formato ISO limpio (YYYY-MM-DD)
+    const fechaHoy = new Date().toISOString().split('T')[0];
+
+    DIRECTORIO_BOTS_MAESTRO.forEach(bot => {
+        // Si el bot pertenece al usuario, está marcado como Premium y tiene fecha de fin
+        if (bot.ownerId === userId && bot.isPremium && bot.fechaFinPremium) {
+            
+            // Comparación cronológica directa
+            if (fechaHoy > bot.fechaFinPremium) {
+                console.warn(`🚨 La ficha Premium del bot @${bot.username} ha expirado.`);
+                bot.isPremium = false; // Degradamos la ficha en caliente en la memoria del script
+            }
+        }
+    });
+}
 // =========================================================================
 // 👤 PERFIL Y COBERTURA DE DATOS
 // =========================================================================
