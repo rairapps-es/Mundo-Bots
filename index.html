@@ -391,6 +391,32 @@
 </div>
         
         <div class="cat-scroll" id="categories-container"></div>
+<div class="advanced-filters-container" style="display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; padding: 0 5px;">
+    
+    <div class="filter-box" style="flex: 1; min-width: 130px;">
+        <select id="filter-sort" onchange="cambiarOrdenacionCatalogo(this.value)" style="width: 100%; background: #1e293b; color: #f8fafc; border: 1px solid #334155; padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; outline: none; cursor: pointer;">
+            <option value="destacados">✨ Destacados primero</option>
+            <option value="estrellas_desc">⭐ Mejor valorados</option>
+            <option value="estrellas_asc">📉 Peor valorados</option>
+        </select>
+    </div>
+
+    <div class="filter-box" style="flex: 1; min-width: 130px;">
+        <select id="filter-lang" onchange="cambiarIdiomaCatalogo(this.value)" style="width: 100%; background: #1e293b; color: #f8fafc; border: 1px solid #334155; padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; outline: none; cursor: pointer;">
+            <option value="Todos">🌐 Todos los idiomas</option>
+            <option value="Español">🇪🇸 Español</option>
+            <option value="English">🇺🇸 English</option>
+            <option value="Portugués">🇵🇹 Portugués</option>
+        </select>
+    </div>
+
+    <div class="filter-box-check" style="width: 100%; display: flex; align-items: center; margin-top: 5px;">
+        <label style="display: flex; align-items: center; gap: 8px; color: #94a3b8; font-size: 0.8rem; cursor: pointer; user-select: none;">
+            <input type="checkbox" id="filter-verified" onchange="toggleFiltroVerificados(this)" style="accent-color: #22d3ee; width: 16px; height: 16px; cursor: pointer;">
+            Solo bots verificados 🛡️
+        </label>
+    </div>
+</div>
 
         <div style="display: flex; justify-content: space-between; margin: 4px 0 10px 0; font-size: 0.7rem; color: var(--text-muted);">
             <span id="counter-results">Mostrando 0 bots</span>
