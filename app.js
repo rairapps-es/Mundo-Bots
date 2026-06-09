@@ -54,7 +54,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         isPremium: false,       
         fechaInicioPremium: "2026-01-12", // Fecha de activación
         fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
-        isVerified: true,      
+        isVerified: false,      
         ownerId: "1328187199",   
         url_web: "",
         url_soporte: ""
@@ -73,7 +73,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         isPremium: false,       
         fechaInicioPremium: "2026-01-12", // Fecha de activación
         fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
-        isVerified: true,      
+        isVerified: false,      
         ownerId: "1320412772",   
         url_web: "",
         url_soporte: ""
@@ -111,7 +111,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         isPremium: false,       
         fechaInicioPremium: "2026-01-12", // Fecha de activación
         fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
-        isVerified: true,      
+        isVerified: false,      
         ownerId: "1329184199",   
         url_web: "",
         url_soporte: ""
@@ -130,7 +130,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         isPremium: false,       
         fechaInicioPremium: "2026-01-12", // Fecha de activación
         fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
-        isVerified: true,      
+        isVerified: false,      
         ownerId: "132047161",
         url_web: "",
         url_soporte: ""
