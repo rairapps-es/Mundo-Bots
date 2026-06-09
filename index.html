@@ -410,15 +410,17 @@
         </select>
     </div>
 
-    <div class="filter-box-check" style="width: 100%; display: flex; align-items: center; margin-top: 5px;">
+    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 4px;">
+        
         <label style="display: flex; align-items: center; gap: 8px; color: #94a3b8; font-size: 0.8rem; cursor: pointer; user-select: none;">
             <input type="checkbox" id="filter-verified" onchange="toggleFiltroVerificados(this)" style="accent-color: #22d3ee; width: 16px; height: 16px; cursor: pointer;">
             Solo bots verificados 🛡️
         </label>
-    </div>
 
-    <div style="width: 100%; display: flex; justify-content: flex-end; margin: 4px 0 2px 0; font-size: 0.7rem; color: var(--text-muted);">
-        <span id="counter-results">Mostrando 0 bots</span>
+        <span id="counter-results" style="font-size: 0.7rem; color: var(--text-muted); white-space: nowrap;">
+            Mostrando 0 bots
+        </span>
+
     </div>
 
 </div>
