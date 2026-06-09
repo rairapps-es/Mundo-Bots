@@ -271,20 +271,33 @@
            🛒 UI DE FORMULARIOS, BUSCADORES Y TIENDA
            ========================================================================= */
         .search-container {
-            position: relative;
-            margin-bottom: 14px;
-        }
-        .search-input {
-            width: 100%;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 12px 14px 12px 40px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 0.85rem;
-            outline: none;
-        }
-        .search-container i { position: absolute; left: 14px; top: 12px; color: var(--text-muted); width: 18px; height: 18px; }
+    position: relative;
+    margin-bottom: 14px;
+}
+
+.search-input {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    /* 🔄 CORREGIDO: Espacio normal a la izquierda (14px) y espacio amplio a la derecha (42px) para la lupa */
+    padding: 12px 42px 12px 14px; 
+    border-radius: 12px;
+    color: #fff;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+.search-container i, .search-container svg { 
+    position: absolute; 
+    /* 🔄 CORREGIDO: Forzamos el icono a irse a la derecha del todo */
+    right: 14px; 
+    top: 50%;
+    transform: translateY(-50%); /* Centrado vertical matemático perfecto */
+    color: var(--text-muted); 
+    width: 16px; 
+    height: 16px; 
+    pointer-events: none; /* Evita que el icono bloquee el click en la barra */
+}
 
         .cat-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 14px; }
         .cat-scroll::-webkit-scrollbar { display: none; }
