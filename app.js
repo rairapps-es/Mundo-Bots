@@ -62,7 +62,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
     {
         id: "b_scan_myid",
         username: "ScanIDBot",
-        titulo: "Scan My ID | Users, Channels & More",
+        titulo: "Scan My ID | Users & More",
         logo: "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=150&auto=format&fit=crop&q=60",
         descripcion_corta: "Reenvía un mensaje desde cualquier chat para conocer el ID en Telegram.",
         descripcion_larga: "Una herramienta básica pero útil, conoce el id de Telegram de todos los chats solo renviando un mensaje de un usuario, canal, grupo o bot. Fácil, rapido y gratis.",
