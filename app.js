@@ -30,7 +30,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         rating: 4.5,
         isPremium: false,
         isVerified: true,
-        ownerId: "87654321",
+        ownerId: "1320417199",
         url_web: "",
         url_soporte: ""
     }
