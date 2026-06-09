@@ -14,8 +14,8 @@ const DIRECTORIO_BOTS_MAESTRO = [
         rating: 4.9,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
         isPremium: true,       
-        fechaInicioPremium: "2026-01-12", // Fecha de activación
-        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
+        fechaInicioPremium: "2026-01-12", 
+        fechaFinPremium: "2027-01-12",    
         isVerified: true,      
         ownerId: "1320417199",   
         url_web: "https://lista-golden.com/cleopatra",
@@ -33,8 +33,8 @@ const DIRECTORIO_BOTS_MAESTRO = [
         rating: 4.7,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
         isPremium: true,       
-        fechaInicioPremium: "2026-01-12", // Fecha de activación
-        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
+        fechaInicioPremium: "2026-01-12", 
+        fechaFinPremium: "2027-01-12",    
         isVerified: true,      
         ownerId: "1320417199",   
         url_web: "https://t.me/ListaGolden",
@@ -52,8 +52,8 @@ const DIRECTORIO_BOTS_MAESTRO = [
         rating: 4.4,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
         isPremium: false,       
-        fechaInicioPremium: "2026-01-12", // Fecha de activación
-        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
+        fechaInicioPremium: "2026-01-12", 
+        fechaFinPremium: "2027-01-12",    
         isVerified: false,      
         ownerId: "1328187199",   
         url_web: "",
@@ -71,8 +71,8 @@ const DIRECTORIO_BOTS_MAESTRO = [
         rating: 4.1,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
         isPremium: false,       
-        fechaInicioPremium: "2026-01-12", // Fecha de activación
-        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
+        fechaInicioPremium: "2026-01-12", 
+        fechaFinPremium: "2027-01-12",    
         isVerified: false,      
         ownerId: "1320412772",   
         url_web: "",
@@ -90,8 +90,8 @@ const DIRECTORIO_BOTS_MAESTRO = [
         rating: 4.5,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
         isPremium: true,       
-        fechaInicioPremium: "2026-01-12", // Fecha de activación
-        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
+        fechaInicioPremium: "2026-01-12", 
+        fechaFinPremium: "2027-01-12",    
         isVerified: true,      
         ownerId: "1320417199",   
         url_web: "https://t.me/ListaGolden",
@@ -109,8 +109,8 @@ const DIRECTORIO_BOTS_MAESTRO = [
         rating: 4.7,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
         isPremium: false,       
-        fechaInicioPremium: "2026-01-12", // Fecha de activación
-        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
+        fechaInicioPremium: "2026-01-12", 
+        fechaFinPremium: "2027-01-12",    
         isVerified: false,      
         ownerId: "1329184199",   
         url_web: "",
@@ -128,8 +128,8 @@ const DIRECTORIO_BOTS_MAESTRO = [
         rating: 4.2,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
         isPremium: false,       
-        fechaInicioPremium: "2026-01-12", // Fecha de activación
-        fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
+        fechaInicioPremium: "2026-01-12", 
+        fechaFinPremium: "2027-01-12",    
         isVerified: false,      
         ownerId: "132047161",
         url_web: "",
@@ -157,8 +157,9 @@ function inicializarDatosTelegram() {
         
         const user = webapp.initDataUnsafe?.user;
         if (user) {
-            const esUsuarioPremium = comprobarSiUsuarioEsPremium(user.id.toString());
-            renderizarHeaderSuperiorPegajoso(user.first_name, user.photo_url, esUsuarioPremium);
+            // CORRECCIÓN 1: Extraer el booleano explícito de la respuesta estructurada del objeto suscripción
+            const suscripcionObj = comprobarSiUsuarioEsPremium(user.id.toString());
+            renderizarHeaderSuperiorPegajoso(user.first_name, user.photo_url, suscripcionObj.esPremium);
             
             const firstLetter = user.first_name ? user.first_name.charAt(0).toUpperCase() : "U";
             const avatarHtml = user.photo_url ? `<img src="${user.photo_url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` : firstLetter;
@@ -174,16 +175,17 @@ function inicializarDatosTelegram() {
     }
     
     comprobarYDispararConfetiLogro();
-    // Forzar renderizado inicial de la calculadora de la tienda
     actualizarCalculoContratacionPremium(1);
 }
 
 function cargarPerfilModoDesarrolloPC() {
-    const esAdminPremium = comprobarSiUsuarioEsPremium("12345678");
-    renderizarHeaderSuperiorPegajoso("Airdayz Creador", null, esAdminPremium);
+    // CORRECCIÓN 2: Ajuste para pruebas locales en PC (ID simulado modificado al del Owner Premium '1320417199')
+    const userIdSimulado = "1320417199";
+    const suscripcionObj = comprobarSiUsuarioEsPremium(userIdSimulado);
+    renderizarHeaderSuperiorPegajoso("Airdayz Creador", null, suscripcionObj.esPremium);
     
     if(document.getElementById("u-name")) document.getElementById("u-name").innerText = "Airdayz Creador";
-    if(document.getElementById("u-id")) document.getElementById("u-id").innerText = "ID: 12345678"; 
+    if(document.getElementById("u-id")) document.getElementById("u-id").innerText = `ID: ${userIdSimulado}`; 
     if(document.getElementById("u-avatar")) document.getElementById("u-avatar").innerText = "A";
 }
 
@@ -191,14 +193,26 @@ function obtenerUserIdTelegramActual() {
     if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
         return window.Telegram.WebApp.initDataUnsafe.user.id.toString();
     }
-    return "12345678"; 
+    // Retornamos el id del dueño premium por defecto en PC para que veas los estilos funcionando
+    return "1320417199"; 
+}
+
+function verificarYActualizarVencimientosCatalogo(userId) {
+    const fechaHoy = new Date().toISOString().split('T')[0];
+
+    DIRECTORIO_BOTS_MAESTRO.forEach(bot => {
+        if (bot.ownerId === userId && bot.isPremium && bot.fechaFinPremium) {
+            if (fechaHoy > bot.fechaFinPremium) {
+                console.warn(`🚨 La ficha Premium del bot @${bot.username} ha expirado.`);
+                bot.isPremium = false; 
+            }
+        }
+    });
 }
 
 function comprobarSiUsuarioEsPremium(userId) {
-    // Primero limpiamos y validamos fechas en el catálogo
     verificarYActualizarVencimientosCatalogo(userId);
 
-    // Buscamos si conserva algún bot que siga siendo premium
     const botPremiumActivo = DIRECTORIO_BOTS_MAESTRO.find(bot => bot.ownerId === userId && bot.isPremium);
     
     if (botPremiumActivo) {
@@ -375,11 +389,9 @@ function construirHtmlTarjetaBot(bot, contextualId) {
                 </div>
                 <div class="bot-actions-right" onclick="event.stopPropagation();" style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
                     <div style="display:flex; gap:8px; align-items:center;">
-                        <!-- Botón Compartir -->
                         <button class="btn-share-icon" onclick="toggleMenuCompartir('${shareMenuId}')" style="background:none; border:none; cursor:pointer; padding:2px;">
                             <i data-lucide="share-2" style="width:17px; height:17px; color:#94a3b8;"></i>
                         </button>
-                        <!-- Botón Favorito -->
                         <button class="btn-fav-heart ${esFav}" onclick="alternarEstadoFavorito('${bot.id}')" style="background:none; border:none; cursor:pointer; padding:2px;">
                             <i data-lucide="heart" style="width:18px; height:18px; fill:${favorites.includes(bot.id) ? '#ef4444' : 'none'}; color:${favorites.includes(bot.id) ? '#ef4444' : '#64748b'}"></i>
                         </button>
@@ -388,7 +400,6 @@ function construirHtmlTarjetaBot(bot, contextualId) {
                 </div>
             </div>
 
-            <!-- Menú Desplegable Compartir Redes -->
             <div id="${shareMenuId}" class="share-social-menu" onclick="event.stopPropagation();">
                 <div class="share-social-grid">
                     <button onclick="compartirEnRedes('twitter', '${bot.titulo}', '${urlBotTelegram}')" class="share-btn tw"><i data-lucide="twitter"></i> X</button>
@@ -422,7 +433,7 @@ function toggleAcordeonTarjetaUnica(domId) {
 }
 
 // =========================================================================
-// ➕ FORMULARIO DE REGISTRO DE BOTS (CORREGIDO)
+// ➕ FORMULARIO DE REGISTRO DE BOTS
 // =========================================================================
 function enviarFormularioBotAlAdmin() {
     const title = document.getElementById("f-title")?.value.trim();
@@ -437,9 +448,7 @@ function enviarFormularioBotAlAdmin() {
         return;
     }
 
-    // Limpiar el @ si el usuario lo incluye manualmente para estandarizar
     username = username.replace('@', '');
-
     const plantillaTexto = `➕ SOLICITUD DE NUEVO BOT:\n- Nombre: ${title}\n- Username: @${username}\n- Idiomas: ${lang}\n- Dev ID: ${userId}\n- Breve: ${shortDesc}\n- Detalle: ${longDesc}`;
     
     lanzarToast("Abriendo chat de entrega...", "success");
@@ -447,10 +456,7 @@ function enviarFormularioBotAlAdmin() {
 }
 
 // =========================================================================
-// 🛒 CALCULADORA Y COMPRA TIENDA PREMIUM (BLINDADO)
-// =========================================================================
-// =========================================================================
-// 🛒 CALCULADORA Y COMPRA TIENDA PREMIUM (VERSIÓN ULTRA-BLINDADA)
+// 🛒 CALCULADORA Y COMPRA TIENDA PREMIUM
 // =========================================================================
 function actualizarCalculoContratacionPremium(meses) {
     document.querySelectorAll('.period-pill').forEach(p => p.classList.remove('active'));
@@ -484,8 +490,6 @@ function actualizarCalculoContratacionPremium(meses) {
 
 function procesarCompraPremiumDesdeUI() {
     const btnCompra = document.getElementById("btn-comprar-premium-action");
-    
-    // Respaldo de seguridad absoluta por si el DOM no ha leído el atributo
     let periodo = "1 meses";
     let total = "2.99 EUR";
 
@@ -495,7 +499,6 @@ function procesarCompraPremiumDesdeUI() {
     }
     
     const userId = obtenerUserIdTelegramActual();
-    
     lanzarToast("Redirigiendo al chat de Airdayz...", "success");
     const textoLimpio = `Hola Airdayz, quiero adquirir la Suscripción Premium Avanzada para mi bot. Mi ID de usuario de Telegram es: ${userId}. He seleccionado el periodo de ${periodo} por un total de ${total}.`;
     
@@ -506,39 +509,21 @@ function ejecutarCompraVerificadoDirecta() {
     const userId = obtenerUserIdTelegramActual();
     lanzarToast("Redirigiendo al chat de Airdayz...", "success");
     const textoLimpio = `Hola Airdayz, quiero adquirir la Insignia Check de Verificado (Pago Único) para mi bot. Mi ID de usuario es: ${userId}.`;
-    
     abrirEnlaceSeguroTelegram(`https://t.me/Airdayz?text=${encodeURIComponent(textoLimpio)}`);
 }
 
-/**
- * Examina el catálogo maestro, busca bots premium del usuario y los degrada si ya vencieron.
- * @param {string} userId - ID de Telegram del usuario actual.
- */
-function verificarYActualizarVencimientosCatalogo(userId) {
-    // Obtener la fecha actual del sistema en formato ISO limpio (YYYY-MM-DD)
-    const fechaHoy = new Date().toISOString().split('T')[0];
-
-    DIRECTORIO_BOTS_MAESTRO.forEach(bot => {
-        // Si el bot pertenece al usuario, está marcado como Premium y tiene fecha de fin
-        if (bot.ownerId === userId && bot.isPremium && bot.fechaFinPremium) {
-            
-            // Comparación cronológica directa
-            if (fechaHoy > bot.fechaFinPremium) {
-                console.warn(`🚨 La ficha Premium del bot @${bot.username} ha expirado.`);
-                bot.isPremium = false; // Degradamos la ficha en caliente en la memoria del script
-            }
-        }
-    });
-}
 // =========================================================================
 // 👤 PERFIL Y COBERTURA DE DATOS
 // =========================================================================
 function renderizarPanelCreador() {
     const userId = obtenerUserIdTelegramActual();
-    const esPremium = comprobarSiUsuarioEsPremium(userId);
+    
+    // CORRECCIÓN 3: Almacenamos el objeto completo retornado
+    const suscripcion = comprobarSiUsuarioEsPremium(userId);
     const countBots = obtenerCantidadBotsUsuario(userId);
     
-    renderizarModuloSuscripcionPerfil(esPremium, countBots);
+    // CORRECCIÓN 4: Pasar de forma explícita los 4 argumentos requeridos por la función visual
+    renderizarModuloSuscripcionPerfil(suscripcion.esPremium, countBots, suscripcion.fechaInicio, suscripcion.fechaFin);
 
     const grid = document.getElementById("creator-bots-grid");
     if (!grid) return;
@@ -574,13 +559,6 @@ function renderizarPanelCreador() {
     if (window.lucide) window.lucide.createIcons();
 }
 
-/**
- * Renderiza el módulo visual de suscripción leyendo los tiempos dinámicos del LocalStorage
- * @param {boolean} esPremium - Flag de estado actual del usuario
- * @param {number} countBots - Cantidad de bots que el usuario tiene indexados
- * @param {string} fInicio - Fecha ISO de inicio de suscripción (ej: "2026-01-12")
- * @param {string} fFin - Fecha ISO de vencimiento (ej: "2027-01-12")
- */
 function renderizarModuloSuscripcionPerfil(esPremium, countBots, fInicio, fFin) {
     const wrapper = document.getElementById("user-subscription-module-wrapper");
     if (!wrapper) return; 
@@ -589,15 +567,13 @@ function renderizarModuloSuscripcionPerfil(esPremium, countBots, fInicio, fFin) 
     const slotsTxt = `${countBots} / ${limitMax}`;
     const countFavs = typeof obtenerCantidadFavoritos === 'function' ? obtenerCantidadFavoritos() : 0;
     
-    // Función auxiliar interna para transformar YYYY-MM-DD a DD/MM/YYYY
     const formatearFechaLatina = (fechaISO) => {
         if (!fechaISO || fechaISO === "N/A") return "N/A";
-        const partes = fechaISO.split("-"); // [YYYY, MM, DD]
+        const partes = fechaISO.split("-"); 
         if(partes.length !== 3) return fechaISO;
-        return `${partes[2]}/${partes[1]}/${partes[0]}`; // Retorna DD/MM/YYYY
+        return `${partes[2]}/${partes[1]}/${partes[0]}`; 
     };
 
-    // Formatear dinámicamente las fechas pasadas por el almacenamiento
     const fechaInicioDisplay = esPremium ? formatearFechaLatina(fInicio) : "N/A";
     const fechaFinDisplay = esPremium ? formatearFechaLatina(fFin) : "N/A";
     
@@ -701,12 +677,11 @@ function dispararEfectoVisualConfetiFisico() {
 }
 
 // =========================================================================
-// 🔀 NAVEGACIÓN ENTRE VISTAS (SOPORTE DE NOMBRES INTEGRAL)
+// 🔀 NAVEGACIÓN ENTRE VISTAS
 // =========================================================================
 function switchView(viewId) {
     activeTabGlobal = viewId;
     
-    // Homologación estricta para evitar desincronizaciones entre 'premium-shop' y 'premium-store'
     const cleanViewName = (viewId === 'premium-shop' || viewId === 'premium-store') ? 'premium-store' : viewId;
     const cleanTabName = (viewId === 'premium-shop' || viewId === 'premium-store') ? 'premium-shop' : viewId;
 
@@ -802,12 +777,9 @@ function lanzarReporteBot(username) {
 }
 
 function dispararAvisoValoracion() { 
-    // Cuadro de confirmación nativo que no rompe la interfaz táctil de Telegram
     const aceptarReseña = confirm("¿Quieres escribir una reseña para este bot?\n\nSerás redirigido a nuestra comunidad para dejar tu valoración y estrellas.");
-    
     if (aceptarReseña) {
         lanzarToast("Abriendo canal de opiniones...", "success");
-        // Cambia este enlace por el link directo a tu grupo/canal de reviews si lo deseas
         abrirEnlaceSeguroTelegram("https://t.me/Mundo_Bot"); 
     }
 }
@@ -819,7 +791,6 @@ function toggleMenuCompartir(menuId) {
     const menu = document.getElementById(menuId);
     if (!menu) return;
     
-    // Cerrar cualquier otro menú de compartir abierto para mantener limpia la interfaz
     document.querySelectorAll('.share-social-menu').forEach(m => {
         if(m.id !== menuId) m.classList.remove('is-open');
     });
@@ -829,7 +800,6 @@ function toggleMenuCompartir(menuId) {
 
 function compartirEnRedes(red, tituloBot, urlBot) {
     const mensajeBase = `¡DESCUBRE ESTE BOT EN MUNDO BOTS! 🤖✨\n\n👉 ${tituloBot}\nEntra e interactúa directamente desde aquí:`;
-    
     let shareUrl = "";
     
     switch(red) {
@@ -883,7 +853,7 @@ function fallbackCopiarTexto(texto) {
 }
 
 // =========================================================================
-// DISPARADOR DOM READY DE SEGURIDAD (DEJA SOLO ESTE AL FINAL)
+// DISPARADOR DOM READY DE SEGURIDAD
 // =========================================================================
 document.addEventListener("DOMContentLoaded", () => {
     if (window.lucide) window.lucide.createIcons();
