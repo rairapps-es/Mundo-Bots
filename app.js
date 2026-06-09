@@ -28,7 +28,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         categorias: ["IA", "Entretenimiento"],
         idioma: "Español",
         rating: 4.5,
-        isPremium: false,
+        isPremium: true,
         isVerified: true,
         ownerId: "1320417199",
         url_web: "",
