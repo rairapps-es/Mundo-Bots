@@ -51,7 +51,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         idioma: "Multi-idioma (EN/ES/IT/BR)",
         rating: 4.4,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
-        isPremium: true,       
+        isPremium: false,       
         fechaInicioPremium: "2026-01-12", // Fecha de activación
         fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
         isVerified: true,      
@@ -70,7 +70,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         idioma: "Inglés",
         rating: 4.1,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
-        isPremium: true,       
+        isPremium: false,       
         fechaInicioPremium: "2026-01-12", // Fecha de activación
         fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
         isVerified: true,      
@@ -108,7 +108,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         idioma: "Multi-idioma (EN/ES/IT & More)",
         rating: 4.7,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
-        isPremium: true,       
+        isPremium: false,       
         fechaInicioPremium: "2026-01-12", // Fecha de activación
         fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
         isVerified: true,      
@@ -127,7 +127,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         idioma: "Multi-idioma (ES/EN/IT & more)",
         rating: 4.2,
          // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
-        isPremium: true,       
+        isPremium: false,       
         fechaInicioPremium: "2026-01-12", // Fecha de activación
         fechaFinPremium: "2027-01-12",    // Fecha de expiración (Un año completo)
         isVerified: true,      
