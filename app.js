@@ -142,7 +142,13 @@ let activeTabGlobal = "catalog";
 const PRECIO_BASE_PREMIUM_MES = 2.99;
 
 // 👉 NUEVA VARIABLE GLOBAL PARA EL "VER MÁS"
-let itemsVisiblesCatalogo = 10; 
+let itemsVisiblesCatalogo = 10;
+
+// 👉 NUEVAS VARIABLES PARA FILTROS AVANZADOS
+let filtroIdiomaSelected = "Todos"; // Puede ser "es", "en", etc. o "Todos"
+let filtroSoloVerificados = false;  // true o false
+let ordenacionSelected = "destacados"; // "destacados", "estrellas_desc", "estrellas_asc"
+
 
 // =========================================================================
 // 🚀 CONEXIÓN TELEGRAM MINI APP SDK
@@ -725,23 +731,50 @@ function setCategoryFilter(catName) {
 
 // Si ambos son iguales, mantienen su orden
 function filtrarCatalogoEnCaliente() { 
-    const query = document.getElementById("main-search")?.value.toLowerCase().trim() || ""; 
+    const queryInput = document.getElementById("main-search");
+    const query = queryInput?.value.toLowerCase().trim() || ""; 
     const grid = document.getElementById("catalog-grid"); 
     if (!grid) return; 
+
+    if (query !== "") {
+        // Si el usuario escribe, reiniciamos la vista a los 10 primeros
+        itemsVisiblesCatalogo = 10; 
+    }
     
-    // 1. Filtrar por categoría y texto de búsqueda
+    // 1. FILTRADO MULTI-CRITERIO (Con tus propiedades exactas)
     let botsFiltrados = DIRECTORIO_BOTS_MAESTRO.filter(bot => { 
-        return (currentCategoryFilter === "Todos" || bot.categorias.includes(currentCategoryFilter)) && 
-               (bot.titulo.toLowerCase().includes(query) || bot.username.toLowerCase().includes(query) || bot.descripcion_corta.toLowerCase().includes(query)); 
+        // Filtro de Categoría
+        const cumpleCategoria = (currentCategoryFilter === "Todos" || bot.categorias.includes(currentCategoryFilter));
+        
+        // Filtro de Texto
+        const cumpleTexto = (bot.titulo.toLowerCase().includes(query) || bot.username.toLowerCase().includes(query) || bot.descripcion_corta.toLowerCase().includes(query));
+        
+        // Filtro de Idioma (Compara directamente con "Español", "English", etc.)
+        const cumpleIdioma = (filtroIdiomaSelected === "Todos" || bot.idioma === filtroIdiomaSelected);
+        
+        // Filtro de Verificados
+        const cumpleVerificado = (!filtroSoloVerificados || bot.isVerified === true);
+
+        return cumpleCategoria && cumpleTexto && cumpleIdioma && cumpleVerificado; 
     }); 
     
-    // 2. Ordenar: Destacados (Premium) SIEMPRE primero
+    // 2. ORDENACIÓN DINÁMICA (Usando tu propiedad 'rating')
     botsFiltrados.sort((a, b) => {
-        if (a.isPremium && !b.isPremium) return -1;
-        if (!a.isPremium && b.isPremium) return 1;
-        return 0;
+        if (ordenacionSelected === "estrellas_desc") {
+            // Mayor puntuación primero (utiliza tu propiedad bot.rating)
+            return (b.rating || 0) - (a.rating || 0);
+        } else if (ordenacionSelected === "estrellas_asc") {
+            // Menor puntuación primero
+            return (a.rating || 0) - (b.rating || 0);
+        } else {
+            // Por defecto: DESTACADOS (Premium) SIEMPRE primero
+            if (a.isPremium && !b.isPremium) return -1;
+            if (!a.isPremium && b.isPremium) return 1;
+            return 0;
+        }
     });
     
+    // Contador de resultados actualizado
     const counter = document.getElementById("counter-results");
     if (counter) counter.innerText = `Mostrando ${Math.min(itemsVisiblesCatalogo, botsFiltrados.length)} de ${botsFiltrados.length} bots`; 
     
@@ -751,21 +784,15 @@ function filtrarCatalogoEnCaliente() {
     // 4. Renderizar las tarjetas segmentadas
     let htmlResultado = botsAMostrar.map(bot => construirHtmlTarjetaBot(bot, 'cat')).join(''); 
     
-    // 5. Agregar dinámicamente el botón "Ver más" si quedan elementos ocultos
-    const contenedorBoton = document.getElementById("pagination-trigger-container");
+    // 5. Agregar dinámicamente el botón "Ver más"
     if (botsFiltrados.length > itemsVisiblesCatalogo) {
-        if (!contenedorBoton) {
-            htmlResultado += `
-                <div id="pagination-trigger-container" style="text-align:center; padding: 16px 0; width:100%;">
-                    <button class="btn-load-more" onclick="incrementarItemsVisiblesCatalogo()" style="background: rgba(34,211,238,0.1); border: 1px solid rgba(34,211,238,0.3); color: #22d3ee; padding: 10px 24px; font-size: 0.8rem; font-weight: 800; border-radius: 8px; cursor: pointer; transition: all 0.2s; width: 80%; max-width: 280px;">
-                        Ver más bots 🔽
-                    </button>
-                </div>
-            `;
-        }
-    } else {
-        // Si no hay más elementos, nos aseguramos de que el contenedor desaparezca
-        if (contenedorBoton) contenedorBoton.remove();
+        htmlResultado += `
+            <div id="pagination-trigger-container" style="text-align:center; padding: 16px 0; width:100%;">
+                <button class="btn-load-more" onclick="incrementarItemsVisiblesCatalogo()" style="background: rgba(34,211,238,0.1); border: 1px solid rgba(34,211,238,0.3); color: #22d3ee; padding: 10px 24px; font-size: 0.8rem; font-weight: 800; border-radius: 8px; cursor: pointer; transition: all 0.2s; width: 80%; max-width: 280px;">
+                    Ver más bots 🔽
+                </button>
+            </div>
+        `;
     }
     
     grid.innerHTML = htmlResultado;
@@ -885,6 +912,27 @@ function fallbackCopiarTexto(texto) {
         lanzarToast("❌ No se pudo copiar automáticamente", "error");
     }
     document.body.removeChild(textArea);
+}
+// Cambiar ordenación (Destacados, Mejor valorados, etc.)
+// 1. Controlador para cambiar la ordenación (Destacados vs Rating)
+function cambiarOrdenacionCatalogo(tipoOrden) {
+    ordenacionSelected = tipoOrden;
+    itemsVisiblesCatalogo = 10; // Reinicia el "Ver más" a la primera página
+    filtrarCatalogoEnCaliente();
+}
+
+// 2. Controlador para cambiar el idioma (Detecta el texto exacto del objeto, ej: "Español")
+function cambiarIdiomaCatalogo(idioma) {
+    filtroIdiomaSelected = idioma;
+    itemsVisiblesCatalogo = 10; // Reinicia el "Ver más" a la primera página
+    filtrarCatalogoEnCaliente();
+}
+
+// 3. Controlador para activar o desactivar el filtro de verificados
+function toggleFiltroVerificados(elementoCheckbox) {
+    filtroSoloVerificados = elementoCheckbox.checked;
+    itemsVisiblesCatalogo = 10; // Reinicia el "Ver más" a la primera página
+    filtrarCatalogoEnCaliente();
 }
 
 // =========================================================================
