@@ -47,6 +47,17 @@ function iniciarSimuladorActividad() {
     // Evitamos duplicar bucles si ya está corriendo
     if (temporizadorSimulador) clearTimeout(temporizadorSimulador);
     
+    // 🛡️ CONTROL DE SEGURIDAD ASÍNCRONO:
+    // Si la base de datos de bots aún no está lista o tiene 0 elementos...
+    if (!window.DIRECTORIO_BOTS_MAESTRO || window.DIRECTORIO_BOTS_MAESTRO.length === 0) {
+        console.warn("⚠️ Simulador: Esperando a que cargue el DIRECTORIO_BOTS_MAESTRO...");
+        // Reintentamos arrancar automáticamente en 1.5 segundos
+        temporizadorSimulador = setTimeout(iniciarSimuladorActividad, 1500);
+        return;
+    }
+    
+    console.log(`✅ Simulador activado con éxito. Enlazado a ${window.DIRECTORIO_BOTS_MAESTRO.length} bots.`);
+
     function programarSiguienteEvento() {
         const tiempoAleatorio = Math.floor(Math.random() * (SIMULADOR_CONFIG.intervaloMaximoMs - SIMULADOR_CONFIG.intervaloMinimoMs + 1)) + SIMULADOR_CONFIG.intervaloMinimoMs;
         
