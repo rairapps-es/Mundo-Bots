@@ -417,6 +417,89 @@
     gap: 6px;
 }
 
+        /* Contenedor padre fijo en la pantalla */
+#live-activity-toast-container {
+    position: fixed;
+    bottom: 75px; /* Ajusta según la altura de tu Navbar inferior de la Mini App */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 360px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none; /* No interrumpe los clics del usuario en la app */
+}
+
+/* Caja de la notificación individual */
+.live-activity-toast {
+    background: rgba(30, 41, 59, 0.85); /* Slate 800 con opacidad */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 10px 14px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+    
+    /* Animación de entrada por defecto (oculto abajo) */
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Clase de activación gatillada por JS */
+.live-activity-toast.visible {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+/* Sutil resalte si la notificación involucra a un bot Destacado */
+.live-activity-toast.toast-premium-style {
+    border-color: rgba(234, 179, 8, 0.3); /* Borde dorado translúcido */
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(42, 32, 60, 0.9));
+}
+
+/* Avatar circular del bot dentro del aviso */
+.toast-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    flex-shrink: 0;
+}
+
+.toast-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+/* Texto del mensaje */
+.toast-text {
+    margin: 0;
+    color: #cbd5e1; /* Texto claro legible */
+    font-size: 0.73rem;
+    line-height: 1.3;
+}
+.toast-text strong {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+/* Mini texto de tiempo transcurrido abajo */
+.toast-time {
+    font-size: 0.6rem;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
     </style>
 </head>
 <body>
@@ -608,5 +691,8 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="app.js?v=2"></script>
+    <script src="simuladorActividad.js?v=2"></script>
+    <div id="live-activity-toast-container"></div>
+
 </body>
 </html>
