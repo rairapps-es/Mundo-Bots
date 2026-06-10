@@ -103,7 +103,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         titulo: "Multi Forward",
         logo: "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=150&auto=format&fit=crop&q=60",
         descripcion_corta: "Automatizada el reenvío de posts de un canal de Telegram a otro.",
-        descripcion_larga: "Éste bot permite renviar el contendio publicado en un canal hacia otro en automático con filtros avanzados, edición de post automático con filtro de palabra, programa las publicaciones, realiza copias de seguridad, etc.",
+        descripcion_larga: "Éste bot permite renviar el contenido publicado en un canal hacia otro en automático con filtros avanzados, edición de post automático con filtro de palabra, programa las publicaciones, realiza copias de seguridad, etc.",
         categorias: ["Herramientas", "Entretenimiento"],
         idioma: "Multi-idioma (EN/ES/IT & More)",
         rating: 4.7,
@@ -703,7 +703,13 @@ function switchView(viewId) {
     if (targetView) targetView.classList.add('active-view');
     if (targetTab) targetTab.classList.add('active-tab');
     
-    if (cleanViewName === 'catalog') renderizarFiltrosCategorias();
+    // 🎪 INYECCIÓN DE DATOS AL ENTRAR A LAS VISTAS
+    if (cleanViewName === 'catalog') {
+        renderizarFiltrosCategorias();
+        // 👉 LÍNEA NUEVA: Carga los 3 carruseles deslizantes (IA, Premium y Verificados)
+        if (typeof cargarTodosLosCarruseles === "function") cargarTodosLosCarruseles();
+    }
+    
     if (cleanViewName === 'favorites') renderizarVistaFavoritos();
     if (cleanViewName === 'profile') renderizarPanelCreador();
     
@@ -827,31 +833,34 @@ function renderizarVistaFavoritos() {
 }
 
 function alternarEstadoFavorito(botId) {
-    // 1. Leer los favoritos actuales con tu clave exacta
+    // 1. Leer favoritos de tu LocalStorage
     let favorites = JSON.parse(localStorage.getItem("gplus_fav_bots")) || [];
     
-    // 2. Buscar si ya existe el bot en la lista
+    // 2. Insertar o remover el ID
     const index = favorites.indexOf(botId);
-    
     if (index === -1) {
-        favorites.push(botId); // Si no estaba, lo añade
+        favorites.push(botId); 
     } else {
-        favorites.splice(index, 1); // Si ya estaba, lo quita
+        favorites.splice(index, 1); 
     }
     
-    // 3. Guardar la lista actualizada en LocalStorage
+    // 3. Guardar cambios en LocalStorage
     localStorage.setItem("gplus_fav_bots", JSON.stringify(favorites));
     
-    // 4. 🔄 Sincronización inteligente de pantallas basada en tu activeTabGlobal
+    // 4. 🔄 REFRESCO INTEGRAL DE PANTALLAS EN TIEMPO REAL
     if (activeTabGlobal === 'catalog') {
-        // Si el usuario está en el catálogo, refrescamos los bots filtrados (cambiará el color del corazón)
+        // Si el usuario está en el catálogo, refrescamos la cuadrícula de abajo...
         filtrarCatalogoEnCaliente(); 
+        
+        // ...y actualizamos instantáneamente los corazones de los 3 carruseles de arriba
+        if (typeof cargarTodosLosCarruseles === "function") cargarTodosLosCarruseles();
+        
     } else if (activeTabGlobal === 'favorites') {
-        // Si está en la pestaña de favoritos, volvemos a renderizar para que el bot desaparezca al instante
+        // Si está en la pestaña de favoritos, volvemos a renderizar esta vista 
+        // para que la tarjeta que se desmarcó desaparezca mágicamente al instante
         renderizarVistaFavoritos(); 
     }
 }
-
 
 function solicitarModificacionCambioBot(idInterno, username) { 
     const userId = obtenerUserIdTelegramActual(); 
@@ -871,6 +880,40 @@ function dispararAvisoValoracion() {
         lanzarToast("Abriendo canal de opiniones...", "success");
         abrirEnlaceSeguroTelegram("https://t.me/Mundo_Bot"); 
     }
+}
+
+function inicializarRotadorGenerico(targetContainerId, contextualPrefix, filterPredicate) {
+    const track = document.getElementById(targetContainerId);
+    if (!track) return;
+
+    // 1. Filtrar los bots usando el predicado configurable pasado por parámetro
+    const botsFiltrados = DIRECTORIO_BOTS_MAESTRO.filter(filterPredicate);
+
+    if (botsFiltrados.length === 0) {
+        track.innerHTML = `<div style="padding:20px; color:#64748b; font-size:0.75rem;">No hay bots disponibles en esta sección.</div>`;
+        return;
+    }
+
+    // 2. Renderizar usando tu función construirHtmlTarjetaBot inyectando el ID contextual único
+    track.innerHTML = botsFiltrados.map(bot => construirHtmlTarjetaBot(bot, contextualPrefix)).join('');
+
+    // 3. Renderizar los iconos internos de Lucide para este bloque
+    if (window.lucide) window.lucide.createIcons();
+}
+
+/**
+ * Función central de llamada. Ejecuta esta función en tu flujo inicializador de la App 
+ * o cuando cambies a la vista que contiene los sliders.
+ */
+function cargarTodosLosCarruseles() {
+    // Carrusel 1: Categoría IA
+    inicializarRotadorGenerico("slider-ia-track", "sl-ia", bot => bot.categorias.includes("IA"));
+
+    // Carrusel 2: Premium Destacados
+    inicializarRotadorGenerico("slider-premium-track", "sl-prem", bot => bot.isPremium === true);
+
+    // Carrusel 3: Verificados
+    inicializarRotadorGenerico("slider-verified-track", "sl-verif", bot => bot.isVerified === true);
 }
 
 // =========================================================================
