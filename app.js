@@ -764,7 +764,7 @@ function setCategoryFilter(catName) {
 }
 
 // Si ambos son iguales, mantienen su orden
-    function filtrarCatalogoEnCaliente() { 
+function filtrarCatalogoEnCaliente() { 
     const queryInput = document.getElementById("main-search");
     const query = queryInput?.value.toLowerCase().trim() || ""; 
     const grid = document.getElementById("catalog-grid"); 
@@ -829,14 +829,8 @@ function setCategoryFilter(catName) {
         `;
     }
     
-    // 6. Inyección final del HTML en el DOM
     grid.innerHTML = htmlResultado;
     if (window.lucide) window.lucide.createIcons(); 
-    
-    // 🚀 EL DESPERTADOR: Arranca el simulador de forma segura ahora que el catálogo ya existe
-    if (typeof iniciarSimuladorActividad === "function") {
-        iniciarSimuladorActividad();
-    }
 }
 
 // Función que dispara el botón "Ver más"
