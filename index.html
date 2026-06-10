@@ -419,17 +419,17 @@
 
         /* Contenedor padre fijo en la pantalla */
 #live-activity-toast-container {
-    position: fixed;
-    bottom: 75px; /* Ajusta según la altura de tu Navbar inferior de la Mini App */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 360px;
-    z-index: 99999;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    pointer-events: none; /* No interrumpe los clics del usuario en la app */
+    position: fixed !important;
+    bottom: 85px !important; /* Lo subimos un poco para esquivar tu Navbar inferior */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 90% !important;
+    max-width: 360px !important;
+    z-index: 999999 !important; /* 👈 Obliga al aviso a flotar sobre CUALQUIER otra capa */
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    pointer-events: none !important;
 }
 
 /* Caja de la notificación individual */
