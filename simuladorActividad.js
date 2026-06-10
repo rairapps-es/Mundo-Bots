@@ -75,8 +75,13 @@ function detenerSimuladorActividad() {
 }
 
 function ejecutarSimulacionYMostrar() {
-    const container = document.getElementById(SIMULADOR_CONFIG.contenedorId);
-    if (!container) return;
+    // 🛡️ SOLUCIÓN: Si el contenedor no existe en el HTML, lo creamos a la fuerza por código
+    let container = document.getElementById(SIMULADOR_CONFIG.contenedorId);
+    if (!container) {
+        container = document.createElement("div");
+        container.id = SIMULADOR_CONFIG.contenedorId;
+        document.body.appendChild(container);
+    }
 
     // 1. Validar que tengamos bots cargados en tu array maestro
     if (!window.DIRECTORIO_BOTS_MAESTRO || window.DIRECTORIO_BOTS_MAESTRO.length === 0) return;
@@ -86,8 +91,8 @@ function ejecutarSimulacionYMostrar() {
     const plantilla = SIMULADOR_DATOS.plantillasAccion[Math.floor(Math.random() * SIMULADOR_DATOS.plantillasAccion.length)];
     const nombre = SIMULADOR_DATOS.nombres[Math.floor(Math.random() * SIMULADOR_DATOS.nombres.length)];
     const pais = SIMULADOR_DATOS.paises[Math.floor(Math.random() * SIMULADOR_DATOS.paises.length)];
-    const numeroAleatorio = Math.floor(Math.random() * 24) + 4; // Genera números lógicos entre 4 y 28
-    const ratingAleatorio = (Math.random() * (5.0 - 4.0) + 4.0).toFixed(1); // Genera ratings reales entre 4.0 y 5.0
+    const numeroAleatorio = Math.floor(Math.random() * 24) + 4; 
+    const ratingAleatorio = (Math.random() * (5.0 - 4.0) + 4.0).toFixed(1); 
 
     // 3. Reemplazo dinámico de etiquetas en la plantilla de texto
     let mensajeFinal = plantilla.texto
@@ -101,7 +106,6 @@ function ejecutarSimulacionYMostrar() {
     // 4. Creación del elemento Toast HTML flotante
     const toast = document.createElement("div");
     toast.className = "live-activity-toast";
-    // Si el bot del evento es Premium, le metemos un sutil borde dorado extra de nivel
     if (bot.isPremium) {
         toast.className += " toast-premium-style";
     }
@@ -114,11 +118,18 @@ function ejecutarSimulacionYMostrar() {
         </div>
     `;
 
-    // 5. Inyectar al contenedor
+    // 5. Inyectar al contenedor (que ahora sí existe 100% seguro)
     container.appendChild(toast);
 
     // 6. Ciclo de vida visual por CSS (Entrada suave, espera y salida)
     setTimeout(() => toast.classList.add("visible"), 100);
+
+    // Desvanecer antes de remover
+    setTimeout(() => {
+        toast.classList.remove("visible");
+        setTimeout(() => toast.remove(), 500);
+    }, SIMULADOR_CONFIG.duracionNotificacionMs);
+}
 
     // Desvanecer antes de remover
     setTimeout(() => {
