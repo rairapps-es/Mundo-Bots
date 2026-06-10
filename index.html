@@ -380,11 +380,58 @@
 .share-btn.rd:active { background: rgba(255, 69, 0, 0.15); color: #ff4500; border-color: rgba(255, 69, 0, 0.3); }
 .share-btn.cp:active { background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
 
+        /* Contenedor del carril horizontal */
+.bot-slider-track {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    gap: 12px;
+    padding: 10px 5px 15px 5px;
+    margin-bottom: 20px;
+    -webkit-overflow-scrolling: touch; /* Suavizado para iOS/Telegram App */
+}
+
+/* Ocultar barras de scroll visuales */
+.bot-slider-track::-webkit-scrollbar {
+    display: none;
+}
+
+/* Ajuste de tarjetas individuales dentro de cualquier carrusel */
+.bot-slider-track .bot-card {
+    flex: 0 0 86%; /* Muestra la tarjeta y deja asomar un pedazo de la siguiente */
+    max-width: 310px;
+    scroll-snap-align: start;
+    margin: 0 !important; /* Evita que des cuadres de CSS externos rompan la fila */
+}
+
+/* Títulos de sección */
+.slider-section-title {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #f1f5f9;
+    margin: 15px 5px 5px 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
     </style>
 </head>
 <body>
 
     <main id="view-catalog" class="app-view active-view">
+
+        <h3 class="slider-section-title">🧠 Inteligencia Artificial</h3>
+<div id="slider-ia-track" class="bot-slider-track"></div>
+
+<h3 class="slider-section-title">👑 Destacados Golden</h3>
+<div id="slider-premium-track" class="bot-slider-track"></div>
+
+<h3 class="slider-section-title">🛡️ Bots Verificados</h3>
+<div id="slider-verified-track" class="bot-slider-track"></div>
+
         <div class="search-container">
             <i data-lucide="search"></i>
           <input type="text" id="main-search" class="search-input" placeholder="Buscar bots por nombre o palabra clave..." oninput="itemsVisiblesCatalogo = 10; filtrarCatalogoEnCaliente()">
