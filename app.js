@@ -1013,4 +1013,10 @@ document.addEventListener("DOMContentLoaded", () => {
     inicializarDatosTelegram();
     renderizarFiltrosCategorias();
     filtrarCatalogoEnCaliente();
+    
+    // 🚀 ENCENDER EL MOTOR SIMULADOR DE ACTIVIDAD RECIENTE
+    // Validamos que la función exista y tengamos bots disponibles en la base de datos
+    if (typeof iniciarSimuladorActividad === "function" && window.DIRECTORIO_BOTS_MAESTRO && DIRECTORIO_BOTS_MAESTRO.length > 0) {
+        iniciarSimuladorActividad();
+    }
 });
