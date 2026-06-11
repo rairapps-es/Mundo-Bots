@@ -1073,15 +1073,20 @@ function toggleFiltroVerificados(elementoCheckbox) {
 // =========================================================================
 // DISPARADOR DOM READY DE SEGURIDAD
 // =========================================================================
+// =========================================================================
+// DISPARADOR DOM READY DE SEGURIDAD
+// =========================================================================
 document.addEventListener("DOMContentLoaded", () => {
     if (window.lucide) window.lucide.createIcons();
     inicializarDatosTelegram();
     renderizarFiltrosCategorias();
     filtrarCatalogoEnCaliente();
     
-    // 🚀 ENCENDER EL NUEVO SISTEMA FOMO DE ACTIVIDAD
-    // Llama a la función segura que lee tu DIRECTORIO_BOTS_MAESTRO
-    if (typeof initFomoActividad === "function") {
-        initFomoActividad();
-    }
+    // 🚀 ACTIVACIÓN BLINDADA: Espera 2 segundos a que todo se asiente y arranca el FOMO
+    setTimeout(() => {
+        if (typeof initFomoActividad === "function") {
+            initFomoActividad();
+            console.log("🔥 Sistema FOMO iniciado en segundo plano.");
+        }
+    }, 2000);
 });
