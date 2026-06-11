@@ -1079,9 +1079,9 @@ document.addEventListener("DOMContentLoaded", () => {
     renderizarFiltrosCategorias();
     filtrarCatalogoEnCaliente();
     
-    // 🚀 ENCENDER EL MOTOR SIMULADOR DE ACTIVIDAD RECIENTE
-    // Validamos que la función exista y tengamos bots disponibles en la base de datos
-    if (typeof iniciarSimuladorActividad === "function" && window.DIRECTORIO_BOTS_MAESTRO && DIRECTORIO_BOTS_MAESTRO.length > 0) {
-        iniciarSimuladorActividad();
+    // 🚀 ENCENDER EL NUEVO SISTEMA FOMO DE ACTIVIDAD
+    // Llama a la función segura que lee tu DIRECTORIO_BOTS_MAESTRO
+    if (typeof initFomoActividad === "function") {
+        initFomoActividad();
     }
 });
