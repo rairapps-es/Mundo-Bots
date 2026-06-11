@@ -419,17 +419,17 @@
 
         /* Contenedor padre fijo en la pantalla */
 #live-activity-toast-container {
-    position: fixed !important;
-    bottom: 85px !important; /* Lo subimos un poco para esquivar tu Navbar inferior */
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: 90% !important;
-    max-width: 360px !important;
-    z-index: 999999 !important; /* 👈 Obliga al aviso a flotar sobre CUALQUIER otra capa */
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 8px !important;
-    pointer-events: none !important;
+    position: fixed;
+    bottom: 75px; /* Ajusta según la altura de tu Navbar inferior de la Mini App */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 360px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none; /* No interrumpe los clics del usuario en la app */
 }
 
 /* Caja de la notificación individual */
@@ -498,21 +498,6 @@
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.3px;
-}
-
-        /* Oculta las ofertas de compra a quienes YA son Premium */
-.modo-gratis.es-premium-active {
-    display: none !important;
-}
-
-/* Oculta por defecto las secciones exclusivas VIP */
-.modo-premium {
-    display: none !important;
-}
-
-/* Las muestra solo cuando el JavaScript confirma el rango Premium */
-.modo-premium.es-premium-active {
-    display: block !important; /* Cambiar a flex o grid si lo necesitas */
 }
 
     </style>
@@ -636,7 +621,7 @@
             <div id="premium-total-price-display" style="margin-bottom: 14px;">
                 <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); padding:10px; border-radius:8px; text-align:center;">
                     <span style="font-size:0.65rem; color:#64748b; display:block; text-transform:uppercase; font-weight:700;">Total a pagar (1 Mes)</span>
-                    <span style="font-size:1.15rem; font-weight:900; color:#eab308;">2.99 €</span>
+                    <span style="font-size:1.15rem; font-weight:900; color:#eab308;">9.99 €</span>
                 </div>
             </div>
 
@@ -647,9 +632,8 @@
                 <li>🌐 <strong>Ecosistema Total:</strong> Botón web y botón de soporte directo.</li>
                 <li>🤖 <strong>Capacidad extendida:</strong> Promociona hasta 3 bots simultáneos.</li>
             </ul>
-            <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px;" class="modo-premium">Ya tienes una suscripción premium activa.</p>
             
-            <button id="btn-comprar-premium-action" class="btn-submit-main modo-gratis" style="background: var(--purple); color: #fff;" data-selected-period="1 meses" data-selected-price="2.99 EUR" onclick="procesarCompraPremiumDesdeUI()">Adquirir Plan Premium 👑</button>
+            <button id="btn-comprar-premium-action" class="btn-submit-main" style="background: var(--purple); color: #fff;" data-selected-period="1 meses" data-selected-price="9.99 EUR" onclick="procesarCompraPremiumDesdeUI()">Adquirir Plan Premium 👑</button>
         </div>
 
         <div class="shop-card">
