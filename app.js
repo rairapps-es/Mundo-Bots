@@ -235,34 +235,6 @@ function comprobarSiUsuarioEsPremium(userId) {
     return { esPremium: false, fechaInicio: "N/A", fechaFin: "N/A" };
 }
 
-// ... Aquí tienes tu función comprobarSiUsuarioEsPremium ...
-function comprobarSiUsuarioEsPremium(userId) {
-    // Tu lógica que ya funciona...
-    // ...
-}
-
-// 🔥 PEGA EL NUEVO SCRIPT JUSTO AQUÍ DEBAJO:
-/**
- * Adapta la interfaz de la Mini App según el estatus Premium del usuario conectado
- * @param {string} currentUserId - El ID de Telegram del usuario actual
- */
-function ejecutarFiltroContenidoPremium(currentUserId) {
-    const resultadoPremium = comprobarSiUsuarioEsPremium(currentUserId);
-    
-    const elementosGratis = document.querySelectorAll('.modo-gratis');
-    const elementosPremium = document.querySelectorAll('.modo-premium');
-
-    if (resultadoPremium.esPremium === true) {
-        elementosGratis.forEach(el => el.classList.add('es-premium-active'));
-        elementosPremium.forEach(el => el.classList.add('es-premium-active'));
-        console.log(`💎 Acceso Premium verificado. Vence el: ${resultadoPremium.fechaFin}`);
-    } else {
-        elementosGratis.forEach(el => el.classList.remove('es-premium-active'));
-        elementosPremium.forEach(el => el.classList.remove('es-premium-active'));
-        console.log("❌ El usuario es un miembro estándar.");
-    }
-}
-
 function obtenerCantidadBotsUsuario(userId) {
     return DIRECTORIO_BOTS_MAESTRO.filter(bot => bot.ownerId === userId).length;
 }
