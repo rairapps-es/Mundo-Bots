@@ -1052,13 +1052,19 @@ function toggleFiltroVerificados(elementoCheckbox) {
 // DISPARADOR DOM READY DE SEGURIDAD
 // =========================================================================
 // =========================================================================
-// DISPARADOR DOM READY DE SEGURIDAD
+// DISPARADOR DOM READY DE SEGURIDAD (CORREGIDO)
 // =========================================================================
 document.addEventListener("DOMContentLoaded", () => {
     if (window.lucide) window.lucide.createIcons();
     inicializarDatosTelegram();
     renderizarFiltrosCategorias();
     filtrarCatalogoEnCaliente();
+    
+    // 🔥 SOLUCIÓN: Forzar el pintado de los Sliders nada más entrar
+    if (typeof cargarTodosLosCarruseles === "function") {
+        cargarTodosLosCarruseles();
+        console.log("🎪 Sliders inicializados al arrancar.");
+    }
     
     // 🚀 ACTIVACIÓN BLINDADA: Espera 2 segundos a que todo se asiente y arranca el FOMO
     setTimeout(() => {
