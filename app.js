@@ -441,60 +441,30 @@ function toggleAcordeonTarjetaUnica(domId) {
     if (elementoTarjeta) elementoTarjeta.classList.toggle('is-expanded');
 }
 
-        function initFomoActividad() {
-    // 🛡️ REINTENTO AUTOMÁTICO INTELIGENTE:
-    // Si tus bots aún no se han descargado o el array está vacío...
-    if (!window.DIRECTORIO_BOTS_MAESTRO || window.DIRECTORIO_BOTS_MAESTRO.length === 0) {
-        console.warn("⚠️ FOMO: Esperando a que cargue DIRECTORIO_BOTS_MAESTRO... Reintentando en 2s.");
-        // En lugar de morir, se vuelve a llamar a sí misma en 2 segundos
-        setTimeout(initFomoActividad, 2000);
-        return;
-    }
-
-    const nombres = ["Raúl", "Carlos", "Sofía", "Lucía", "Marta", "Andrés", "Mateo", "Emma", "Elena", "Oliver", "Paula", "Valentina", "Thiago", "Santiago", "Lucas", "Martina", "Diego"];
-    const banderas = ["🇪🇸", "🇲🇽", "🇦🇷", "🇨🇴", "🇨🇱", "🇵🇪", "🇻🇪", "🇺🇾", "🇪🇨"];
-    
-    const plantillas = ["individual-fav", "colectivo-fav", "colectivo-click", "tendencia"];
-
-    // Limpiar bucles antiguos para evitar que se dupliquen
-    if (window.fomoIntervalID) clearInterval(window.fomoIntervalID);
-    
-    console.log(`✅ FOMO activado con éxito. Conectado a ${window.DIRECTORIO_BOTS_MAESTRO.length} bots.`);
-
-    // Ejecutar inmediatamente el primer aviso para no tener que esperar 12 segundos a ver si funciona
-    mostrarFomoInput(nombres, banderas, plantillas);
-
-    // Dejar programado el bucle para los siguientes avisos cada 12 segundos
-    window.fomoIntervalID = setInterval(() => {
-        mostrarFomoInput(nombres, banderas, plantillas);
-    }, 12000); 
-}
-
-// Separamos la lógica del renderizado para poder lanzar el primer aviso sin esperas
-function mostrarFomoInput(nombres, banderas, plantillas) {
+        function mostrarFomoInput(nombres, banderas, plantillas) {
     const banner = document.getElementById('fomo-notification');
     const fomoText = document.getElementById('fomo-text');
     const fomoImg = document.getElementById('fomo-bot-img');
     
     if (!banner || !fomoText || !fomoImg) return;
 
-    // Quitamos la probabilidad del 60% para las pruebas. Ahora saltará SIEMPRE cada 12s.
     const botAleatorio = DIRECTORIO_BOTS_MAESTRO[Math.floor(Math.random() * DIRECTORIO_BOTS_MAESTRO.length)];
     const n = nombres[Math.floor(Math.random() * nombres.length)];
     const b = banderas[Math.floor(Math.random() * banderas.length)];
     const plantilla = plantillas[Math.floor(Math.random() * plantillas.length)];
     
     const numUsuarios = Math.floor(Math.random() * 16) + 4; 
-    const botNombre = `<span class="text-amber-400 font-bold">${botAleatorio.titulo}</span>`;
+    // Colores nativos en hexadecimal/estándar por si acaso
+    const botNombre = `<span style="color: #f59e0b; font-weight: 800;">${botAleatorio.titulo}</span>`;
 
     let mensajeFinal = "";
 
     if (plantilla === "individual-fav") {
-        mensajeFinal = `<strong class="text-sky-400 font-bold">${n}</strong> de ${b} añadió el bot ${botNombre} a sus favoritos.`;
+        mensajeFinal = `<strong style="color: #38bdf8; font-weight: 800;">${n}</strong> de ${b} añadió el bot ${botNombre} a sus favoritos.`;
     } else if (plantilla === "colectivo-fav") {
-        mensajeFinal = `🔥 <strong class="text-rose-400 font-bold">${numUsuarios} personas</strong> agregaron el bot ${botNombre} a favoritos esta semana.`;
+        mensajeFinal = `🔥 <strong style="color: #f43f5e; font-weight: 800;">${numUsuarios} personas</strong> agregaron el bot ${botNombre} a favoritos esta semana.`;
     } else if (plantilla === "colectivo-click") {
-        mensajeFinal = `✨ <strong class="text-emerald-400 font-bold">${numUsuarios} usuarios</strong> descubrieron el bot ${botNombre} hoy.`;
+        mensajeFinal = `✨ <strong style="color: #10b981; font-weight: 800;">${numUsuarios} usuarios</strong> descubrieron el bot ${botNombre} hoy.`;
     } else if (plantilla === "tendencia") {
         mensajeFinal = `🚀 ¡El bot ${botNombre} está marcando tendencia y está de moda!`;
     }
@@ -502,12 +472,15 @@ function mostrarFomoInput(nombres, banderas, plantillas) {
     fomoImg.src = botAleatorio.logo || "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=80";
     fomoText.innerHTML = mensajeFinal;
     
-    // Animación de entrada: quitamos las clases de Tailwind que lo ocultan
-    banner.classList.remove('translate-y-20', 'opacity-0');
+    // 🚀 ANIMACIÓN CON CSS NATIVO (Adiós clases de Tailwind)
+    // Hace aparecer el cartel subiendo suavemente
+    banner.style.opacity = "1";
+    banner.style.transform = "translateY(0px)";
     
-    // Ocultar a los 5 segundos
+    // Ocultar a los 5 segundos (vuelve a bajar y se desvanece)
     setTimeout(() => { 
-        banner.classList.add('translate-y-20', 'opacity-0'); 
+        banner.style.opacity = "0";
+        banner.style.transform = "translateY(30px)";
     }, 5000);
 }
 
