@@ -101,7 +101,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         id: "b_multi_forward",
         username: "MultiForwardBot",
         titulo: "Multi Forward",
-        logo: "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=150&auto=format&fit=crop&q=60",
+        logo: "https://res.cloudinary.com/dq7omdvi0/image/upload/f_auto,q_auto/IMG_20260617_141808_912_b4k61z",
         descripcion_corta: "Automatizada el reenvío de posts de un canal de Telegram a otro.",
         descripcion_larga: "Éste bot permite renviar el contenido publicado en un canal hacia otro en automático con filtros avanzados, edición de post automático con filtro de palabra, programa las publicaciones, realiza copias de seguridad, etc.",
         categorias: ["Herramientas", "Entretenimiento"],
