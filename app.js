@@ -120,7 +120,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         id: "b_mensajesecreto",
         username: "mensajesecretobot",
         titulo: "mensajesecreto",
-        logo: "https://images.unsplash.com/photo-1614680376593-902f74fa0d41?w=150&auto=format&fit=crop&q=60",
+        logo: "https://res.cloudinary.com/dq7omdvi0/image/upload/f_auto,q_auto/IMG_20260617_145321_552_q6pdgj",
         descripcion_corta: "Envía mensajes secretos en chats de grupos de Telegram con el modo inline.",
         descripcion_larga: "Éste bot permite enviar mensajes secretos a un usuario en concreto en los chats de grupos agregando el destinatario @user.",
         categorias: ["Herramientas", "Entretenimiento"],
