@@ -134,7 +134,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         ownerId: "132047161",
         url_web: "",
         url_soporte: ""
-    }
+    },
     {
         id: "b_insideads",
         username: "InsideAds_bot/open?startapp=r_1320417199_utm_source-insideadsInternal-utm_medium-notification-utm_campaign-mailreferralregisterednotify-variantA",
