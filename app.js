@@ -135,6 +135,26 @@ const DIRECTORIO_BOTS_MAESTRO = [
         url_web: "",
         url_soporte: ""
     }
+    {
+        id: "b_insideads",
+        username: "InsideAds_bot/open?startapp=r_1320417199_utm_source-insideadsInternal-utm_medium-notification-utm_campaign-mailreferralregisterednotify-variantA",
+        titulo: "Inside Ads",
+        logo: "https://res.cloudinary.com/dq7omdvi0/image/upload/f_auto,q_auto/IMG_20260617_145321_552_q6pdgj",
+        descripcion_corta: "Monetiza tu canal con anuncios, crea, publica y automatiza con IA.",
+        descripcion_larga: "Éste bot es una herramienta excelente para administradores de canales en Telegram, permite monetizar tu canal mostrando anuncios pagados, ofrece multitud de opciones de configuración como la hora y el día de publicación o el numero de anuncios que quieres mostrar en tu canal, y cada cuánto tiempo se repite, déjalo programado y despreocúpate, InsideAds lo hace todo por tí. Puedes elegir entre anuncios post completos o micro-anuncios de texto que se incorporar en las publicaciones de tu canal automáticamente para que sigas generando ingresos, y decide cada cuantos post aparecen los micro-anuncios en tu canal.",
+        categorias: ["Herramientas", "Entretenimiento"],
+        idioma: "Multi-idioma (ES/EN/IT & more)",
+        rating: 4.5,
+         // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
+        isPremium: false,       
+        fechaInicioPremium: "2026-01-12", 
+        fechaFinPremium: "2027-01-12",    
+        isVerified: false,      
+        ownerId: "132047161",
+        url_web: "",
+        url_soporte: ""
+    }
+
 ];
 
 let currentCategoryFilter = "Todos";
