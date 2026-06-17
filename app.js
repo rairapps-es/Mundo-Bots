@@ -99,7 +99,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
     },
     {
         id: "b_multi_forward",
-        username: "MultiForwardBot",
+        username: "MultiForwardBot?start=1320417199",
         titulo: "Multi Forward",
         logo: "https://res.cloudinary.com/dq7omdvi0/image/upload/f_auto,q_auto/IMG_20260617_141808_912_b4k61z",
         descripcion_corta: "Automatizada el reenvío de posts de un canal de Telegram a otro.",
