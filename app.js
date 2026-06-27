@@ -937,11 +937,18 @@ function lanzarReporteBot(username) {
     abrirEnlaceSeguroTelegram(`https://t.me/Airdayz?text=${encodeURIComponent(texto)}`); 
 }
 
-function dispararAvisoValoracion() { 
-    const aceptarReseña = confirm("¿Quieres escribir una reseña para este bot?\n\nSerás redirigido a nuestra comunidad para dejar tu valoración y estrellas.");
+// Modificamos la función para que reciba el objeto "bot"
+function dispararAvisoValoracion(bot) { 
+    // Usamos los datos del objeto que viene de tu DIRECTORIO_BOTS_MAESTRO
+    const mensaje = `¿Quieres escribir una reseña para ${bot.nombre} (${bot.usuario})?\n\n` +
+                    `Categoría: ${bot.categoria}\n\n` +
+                    `Serás redirigido a nuestra comunidad para dejar tu valoración y estrellas.`;
+
+    const aceptarReseña = confirm(mensaje);
+    
     if (aceptarReseña) {
-        lanzarToast("Abriendo canal de opiniones...", "success");
-        abrirEnlaceSeguroTelegram("https://t.me/Mundo_Bot"); 
+        lanzarToast(`Abriendo canal de opiniones para ${bot.nombre}...`, "success");
+        abrirEnlaceSeguroTelegram("https://t.me/MundoBots_Bot?start=valorar"); 
     }
 }
 
