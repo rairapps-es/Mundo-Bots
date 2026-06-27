@@ -938,20 +938,13 @@ function lanzarReporteBot(username) {
 }
 
 // Modificamos la función para que reciba el objeto "bot"
-function dispararAvisoValoracion(bot) { 
-    // Usamos los datos del objeto que viene de tu DIRECTORIO_BOTS_MAESTRO
-    const mensaje = `¿Quieres escribir una reseña para ${bot.nombre} (${bot.usuario})?\n\n` +
-                    `Categoría: ${bot.categoria}\n\n` +
-                    `Serás redirigido a nuestra comunidad para dejar tu valoración y estrellas.`;
-
-    const aceptarReseña = confirm(mensaje);
-    
+function dispararAvisoValoracion() { 
+    const aceptarReseña = confirm("¿Quieres escribir una reseña para este bot?\n\nSerás redirigido a nuestro bot para enviar tu valoración y estrellas.");
     if (aceptarReseña) {
-        lanzarToast(`Abriendo canal de opiniones para ${bot.nombre}...`, "success");
+        lanzarToast("Abriendo el bot de opiniones...", "success");
         abrirEnlaceSeguroTelegram("https://t.me/MundoBots_Bot?start=valorar"); 
     }
 }
-
 function inicializarRotadorGenerico(targetContainerId, contextualPrefix, filterPredicate) {
     const track = document.getElementById(targetContainerId);
     if (!track) return;
