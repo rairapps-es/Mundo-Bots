@@ -156,7 +156,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
     },
     {
         id: "b_emojisgalacticos",
-        username: "EmojisGalacticos",
+        username: "EmojisGalacticosbot",
         titulo: "Emojis Galácticos",
         logo: "https://res.cloudinary.com/dq7omdvi0/image/upload/v1784323687/IMG_20260717_224841_907_znwthe.jpg",
         descripcion_corta: "Crea y Modifica fácilmente paquetes de stickers increíbles.",
