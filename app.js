@@ -153,6 +153,25 @@ const DIRECTORIO_BOTS_MAESTRO = [
         ownerId: "132047166",
         url_web: "",
         url_soporte: ""
+    },
+    {
+        id: "b_emojisgalacticos",
+        username: "EmojisGalacticos",
+        titulo: "Emojis Galácticos",
+        logo: "https://res.cloudinary.com/dq7omdvi0/image/upload/f_auto,q_auto/IMG_20260617_164448_642_pcuuof",
+        descripcion_corta: "Crea y Modifica fácilmente paquetes de stickers increíbles.",
+        descripcion_larga: "Bot para crear un modificar paquetes de stickers gratis en Telegram. Acepta archivos de vídeo, gif, stickers y fotos.",
+        categorias: ["Herramientas"],
+        idioma: "Español",
+        rating: 4.1,
+         // --- CONTROL CRONOLÓGICO INDIVIDUAL ---
+        isPremium: false,       
+        fechaInicioPremium: "", 
+        fechaFinPremium: "",    
+        isVerified: false,      
+        ownerId: "02928282",
+        url_web: "",
+        url_soporte: ""
     }
 
 ];
