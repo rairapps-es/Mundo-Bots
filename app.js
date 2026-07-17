@@ -169,7 +169,7 @@ const DIRECTORIO_BOTS_MAESTRO = [
         fechaInicioPremium: "", 
         fechaFinPremium: "",    
         isVerified: false,      
-        ownerId: "02928282",
+        ownerId: "8281935036",
         url_web: "",
         url_soporte: ""
     }
